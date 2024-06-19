@@ -1,6 +1,7 @@
 package com.entity;
 
 import com.constant.UserStatus;
+import com.entity.req.AuthorityApplyRequest;
 import com.entity.req.UserLoginRequest;
 import com.util.DateUtils;
 import lombok.*;
@@ -32,5 +33,4 @@ public class UserLogin {
                 .loginTime(DateUtils.getCurrentDateStr())
                 .build();
     }
-
 }

@@ -1,13 +1,27 @@
 package com.context;
 
 import com.constant.AuthCategory;
+import com.entity.AuthCategoryEntity;
+import com.entity.GrantUserLogin;
+import lombok.*;
 
 import java.util.List;
 
-public class AuthGrantAccessCheckContext extends AccessCheckContext{
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthGrantAccessCheckContext {
 
-    List<AuthCategory> alreadyHoldAuths;
+    Boolean adminOnly;
 
-    List<AuthCategory> expectedGrantAuths;
+    GrantUserLogin usersInfo;
+
+    private List<AuthCategoryEntity> successAddedAuths;
+
+    private List<AuthCategory> alreadyHoldAuths;
+
+    private List<AuthCategoryEntity> expectedGrantAuths;
 
 }

@@ -5,6 +5,7 @@ import com.constant.AuthException;
 import com.constant.UserRole;
 import com.constant.UserStatus;
 import com.dao.UserDao;
+import com.entity.DTO.AuthInDb;
 import com.entity.DTO.User;
 import com.entity.UserLogin;
 import com.entity.crypto.CipherUtils;
@@ -14,6 +15,7 @@ import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -26,13 +28,12 @@ public class UserServiceImpl implements UserService {
     // here we design another paramter adminOnly for grant authority situation
     // in grant resource situation only adminOnly user can access this system
     // so that we can reuse this part of code
-    // i am not finish that interface
     @Override
     public User checkUserRole(UserLogin userLogin, boolean adminOnly) {
-        User userInDb = userDao.findUserById(userLogin.getUserId(), userLogin.getAccountName());
+        User userInDb = userDao.findUserById(userLogin.getUserId());
         if (Objects.isNull(userInDb)) {
             log.error("user not exists,accountName: {}", userLogin.getAccountName());
-            throw new AuthException(AuthDesc.USER_NOT_EXIST);
+            throw new AuthException(AuthDesc.USER_NOT_EXIST,userInDb.getAccountName());
         }
 
         boolean isUserInDbAdmin = StringUtils.equals(userInDb.getRole(), UserRole.ADMIN.getRole());
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
         // user is not admin while try to access with admin role
         if (!isUserInDbAdmin && isLoginUserAdmin(userLogin)) {
             log.error("user has not grant admin authority,acoountName: {}", userLogin.getAccountName());
-            throw new AuthException(AuthDesc.USER_ROLE_ERROR);
+            throw new AuthException(AuthDesc.USER_ROLE_ERROR,null);
         }
         if (!isUserInDbAdmin && adminOnly) {
             log.error("user has not grant admin Role userId:{}", userLogin.getUserId());
@@ -63,7 +64,7 @@ public class UserServiceImpl implements UserService {
         if (successNum != 1) {
             log.error("user not exists, userId:{}, accountName:{}",
                     userLogin.getUserId(), userLogin.getAccountName());
-            throw new AuthException(AuthDesc.USER_NOT_EXIST);
+            throw new AuthException(AuthDesc.USER_NOT_EXIST,userLogin.getUserId());
         }
     }
 
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
             case DEREG:
                 return Boolean.FALSE;
             default:
-                throw new AuthException(AuthDesc.UNOWN_USER_STATUS);
+                throw new AuthException(AuthDesc.UNOWN_USER_STATUS,userStatus.getStatus());
         }
     }
 
@@ -87,6 +88,12 @@ public class UserServiceImpl implements UserService {
         Objects.requireNonNull(userSignature);
         String plainId = CipherUtils.decryptWithSysKey(userSignature);
         if ( !StringUtils.equals(plainId, userId))
-            throw new AuthException(AuthDesc.USER_SIGNATURE_INVALID);
+            throw new AuthException(AuthDesc.USER_SIGNATURE_INVALID,null);
     }
+
+    @Override
+    public List<AuthInDb> getUserAuths(String userId) {
+        return null;
+    }
+
 }

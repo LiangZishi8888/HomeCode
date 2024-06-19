@@ -1,8 +1,15 @@
 package com.entity.req;
 
+import lombok.*;
+
 import java.util.List;
 
-public class AuthorityApplyRequet {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthorityApplyRequest {
 
     String adminUserId;
     

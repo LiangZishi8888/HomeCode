@@ -11,6 +11,7 @@ import com.entity.req.UserLoginRequest;
 import com.entity.req.UserLoginRequestWithSign;
 import com.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -63,17 +64,18 @@ public class UserRoleAccessCheckWorkFlow {
         UserLogin userLogin = loginAccessCheckContext.getUserLogin();
         if (loginAccessCheckContext.getCheckResult() == Boolean.TRUE)
             userService.updateUserLoginTime(userLogin);
-        return;
     }
 
     public Boolean checkUserRoleAndStatus(AccessCheckContext accessCheckContext) {
-
-        Objects.requireNonNull(accessCheckContext.getUserLogin());
+        UserLogin userLogin=accessCheckContext.getUserLogin();
+        Objects.requireNonNull(userLogin);
         Boolean adminOnly = Optional.ofNullable(accessCheckContext.getAdminOnly()).orElse(Boolean.FALSE);
-        User userInDb = userService.checkUserRole(accessCheckContext.getUserLogin(), adminOnly);
+        User userInDb = userService.checkUserRole(userLogin, adminOnly);
         accessCheckContext.setUser(userInDb);
 
-        if (Objects.isNull(userInDb))
+        if (Objects.isNull(userInDb)
+                ||
+                !StringUtils.equals(userLogin.getAccountName(),userInDb.getAccountName()))
             return Boolean.FALSE;
         Boolean isUserLoginCapable = userService.checkUserStatus(userInDb.getStatus());
 
@@ -93,7 +95,7 @@ public class UserRoleAccessCheckWorkFlow {
                     userLoginRequestWithSign.getUserId());
         } catch (Exception e) {
             log.error("UserSignature check failed",e);
-            throw new AuthException(AuthDesc.USER_SIGNATURE_INVALID);
+            throw new AuthException(AuthDesc.USER_SIGNATURE_INVALID,null);
         }
     }
 

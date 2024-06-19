@@ -2,8 +2,11 @@ package com.service;
 
 import com.constant.UserStatus;
 
+import com.entity.DTO.AuthInDb;
 import com.entity.DTO.User;
 import com.entity.UserLogin;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -16,5 +19,7 @@ public interface UserService {
     Boolean checkUserStatus(UserStatus userStatus);
 
     void checkUserSignature(String userSignature,String userId);
+
+    List<AuthInDb> getUserAuths(String userId);
 
 }

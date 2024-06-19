@@ -14,12 +14,37 @@
         <result property="status" column="status" javaType="com.constant.UserStatus" jdbcType="VARCHAR"
                 typeHandler="com.handler.UpperCaseFiledNameEnumHandler"/>
     </resultMap>
+
+    <resultMap type="AuthInDb" id="userInDbMap">
+        <id property="authAssociationId" column="user_id" javaType="String" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" javaType="String" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" javaType="String" jdbcType="VARCHAR"/>
+        <result property="adminUserId" column="admin_user_id" javaType="String" jdbcType="VARCHAR"/>
+        <result property="adminUserName" column="admin_user_name" javaType="String" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" javaType="String" jdbcType="VARCHAR"/>
+        <result property="lastModifyTime" column="last_modify_time" javaType="String" jdbcType="VARCHAR"/>
+        <result property="authCategory" column="auth_category" javaType="com.constant.AuthStatus" jdbcType="VARCHAR"
+                typeHandler="com.handler.UpperCaseFiledNameEnumHandler"/>
+        <result property="status" column="status" javaType="com.constant.AuthStatus" jdbcType="VARCHAR"
+                typeHandler="com.handler.UpperCaseFiledNameEnumHandler"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        auth_association_id,user_id,user_name,admin_user_id,admin_user_name,create_time,last_modify_time,auth_category,status
+    </sql>
+
     <select id="findUserById"  resultMap="userMap">
         select * from `t_u_auths_users`where
-                  dbSplitkey=#{dbKey} and user_id=#{uid} and account_name=#{acc}
+                  dbSplitkey=#{dbKey} and user_id=#{uid}
     </select>
 
     <update id="updateUserLoginTimeById" >
         update `t_u_auths_users` set last_login_time=#{loginTime} where dbSplitKey=#{dbKey} and user_id=#{uid}
     </update>
+
+    <select id="queryUserAuthsByUserId"  resultMap="userInDbMap">
+      select
+        <include refid="Base_Column_List" />
+        from `t_u_auths_grant_detials`where dbSplitKey=#{dbKey} and user_id=#{uid} and auth_category=#{authName}
+    </select>
 </mapper>

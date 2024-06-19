@@ -6,9 +6,12 @@ public class AuthException extends RuntimeException{
 
     String resultDescription;
 
-    public AuthException(AuthDesc pd){
+    String errorMsg;
+
+    public AuthException(AuthDesc pd,String errorMsg){
         this.resultCode=pd.getResCode();
         this.resultDescription=pd.getResDesc();
+        this.errorMsg=errorMsg;
     }
 
     public String getResultCode() {

@@ -51,7 +51,7 @@ public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
     public void should_return_success_when_user_exists_and_active(){
 
         //before-login
-        User adminUser = userDao.findUserById("123456", "Eric");
+        User adminUser = userDao.findUserById("123456");
         Assert.assertTrue(adminUser.getStatus().getStatus().equals(UserStatus.ACTIVE.getStatus()));
 
         UserLoginRequestWithSign req = TestDataCache.getMockReq("appCreate1",
@@ -62,7 +62,7 @@ public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
         Assert.assertEquals(AuthDesc.SUCCESS.getResDesc(),resp.getResultDescription());
         Assert.assertEquals(adminUser.getLastLoginTime(),resp.getLastLoginTime());
 
-        User adminUserAfterLogin= userDao.findUserById("123456", "Eric");
+        User adminUserAfterLogin= userDao.findUserById("123456");
         //after-login,last_login_time update with current access loginTime
         Assert.assertEquals(adminUserAfterLogin.getLastLoginTime(),resp.getLoginTime());
     }
@@ -102,7 +102,7 @@ public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
         Assert.assertEquals(resp.getUserStatus(),resp.getUserStatus());
 
         // after access lastLoginTime should be update in db while not active user will not
-        User degUser=userDao.findUserById("123402","Lisa");
+        User degUser=userDao.findUserById("123402");
         Assert.assertEquals(resp.getLastLoginTime(),degUser.getLastLoginTime());
     }
 

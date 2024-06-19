@@ -14,7 +14,11 @@ public enum AuthDesc {
 
     USER_NOT_EXIST("AUT0005","User_Not_Exist"),
 
-    UNOWN_USER_STATUS("AUT0006","Unown_User_Status");
+    UNOWN_USER_STATUS("AUT0006","Unown_User_Status"),
+
+    INVALID_AUTH_APPLY("AUT0007","Auth_Not_Exists"),
+
+    USER_STATUS_NOT_ACTIVE("AUT0008","User_Not_Active");
 
 
     public String resCode;

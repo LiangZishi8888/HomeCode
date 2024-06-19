@@ -30,7 +30,7 @@ public abstract class JsonUtil {
             return obj;
         } catch (Exception e) {
             log.error("convert data failed", e);
-            throw new AuthException(AuthDesc.DATA_TRANSFORM_ERROR);
+            throw new AuthException(AuthDesc.DATA_TRANSFORM_ERROR,null);
         }
     }
 
@@ -41,7 +41,7 @@ public abstract class JsonUtil {
             return json;
         }catch (Exception e){
             log.error("convert data failed", e);
-            throw new AuthException(AuthDesc.DATA_TRANSFORM_ERROR);
+            throw new AuthException(AuthDesc.DATA_TRANSFORM_ERROR,null);
         }
     }
 
@@ -51,7 +51,7 @@ public abstract class JsonUtil {
             return jsonNode;
         }catch (Exception e){
             log.error("load data failed", e);
-            throw new AuthException(AuthDesc.DATA_TRANSFORM_ERROR);
+            throw new AuthException(AuthDesc.DATA_TRANSFORM_ERROR,null);
         }
     }
 

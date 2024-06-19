@@ -1,7 +1,8 @@
 package com.controller;
 
+import com.Flow.AdminGrantAccessWorkFlow;
 import com.Flow.UserRoleAccessCheckWorkFlow;
-import com.entity.req.AuthorityApplyRequet;
+import com.entity.req.AuthorityApplyRequest;
 import com.entity.resp.BaseResp;
 import com.entity.req.UserLoginRequestWithSign;
 import com.entity.resp.UserLoginAccessCheckResp;
@@ -16,14 +17,16 @@ public class AuthorityController {
     @Autowired
     UserRoleAccessCheckWorkFlow userRoleAccessCheckWorkFlow;
 
+    @Autowired
+    AdminGrantAccessWorkFlow adminGrantAccessWorkFlow;
+
     @PostMapping("/role/access")
     public UserLoginAccessCheckResp checkUserAccess(@RequestBody UserLoginRequestWithSign userLoginRequestWithSign){
         return userRoleAccessCheckWorkFlow.doProcess(userLoginRequestWithSign);
     }
 
-    //Unfinished
     @PostMapping("/admin/addUser")
-    public BaseResp addUserResources(@RequestBody AuthorityApplyRequet authorityApplyRequet){
-         return null;
+    public BaseResp addUserResources(@RequestBody AuthorityApplyRequest authorityApplyRequet){
+        return adminGrantAccessWorkFlow.doProcess(authorityApplyRequet);
     }
 }
