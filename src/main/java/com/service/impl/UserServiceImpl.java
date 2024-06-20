@@ -32,20 +32,21 @@ public class UserServiceImpl implements UserService {
     public User checkUserRole(UserLogin userLogin, boolean adminOnly) {
         User userInDb = userDao.findUserById(userLogin.getUserId());
         if (Objects.isNull(userInDb)) {
-            log.error("user not exists,accountName: {}", userLogin.getAccountName());
-            throw new AuthException(AuthDesc.USER_NOT_EXIST,userInDb.getAccountName());
+            log.error("user not exists,userId : {}", userLogin.getUserId());
+            throw new AuthException(AuthDesc.USER_NOT_EXIST,userLogin.getUserId());
         }
 
         boolean isUserInDbAdmin = StringUtils.equals(userInDb.getRole(), UserRole.ADMIN.getRole());
+        boolean requiredAdmin=adminOnly||isLoginUserAdmin(userLogin);
 
         // user is not admin while try to access with admin role
-        if (!isUserInDbAdmin && isLoginUserAdmin(userLogin)) {
-            log.error("user has not grant admin authority,acoountName: {}", userLogin.getAccountName());
-            throw new AuthException(AuthDesc.USER_ROLE_ERROR,null);
+        if (!isUserInDbAdmin && requiredAdmin) {
+            log.error("user has not grant admin authority,id: {}", userLogin.getUserId());
+            throw new AuthException(AuthDesc.USER_NEED_ADMIN_PERMISSION,null);
         }
-        if (!isUserInDbAdmin && adminOnly) {
-            log.error("user has not grant admin Role userId:{}", userLogin.getUserId());
-        }
+
+        // setName for only id access interface
+        userLogin.setAccountName(userInDb.getAccountName());
         userLogin.setStatus(userInDb.getStatus());
         userLogin.setLastLoginTime(userInDb.getLastLoginTime());
         return userInDb;
@@ -81,14 +82,6 @@ public class UserServiceImpl implements UserService {
             default:
                 throw new AuthException(AuthDesc.UNOWN_USER_STATUS,userStatus.getStatus());
         }
-    }
-
-    @Override
-    public void checkUserSignature(String userSignature, String userId) {
-        Objects.requireNonNull(userSignature);
-        String plainId = CipherUtils.decryptWithSysKey(userSignature);
-        if ( !StringUtils.equals(plainId, userId))
-            throw new AuthException(AuthDesc.USER_SIGNATURE_INVALID,null);
     }
 
     @Override

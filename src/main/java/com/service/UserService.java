@@ -18,8 +18,6 @@ public interface UserService {
 
     Boolean checkUserStatus(UserStatus userStatus);
 
-    void checkUserSignature(String userSignature,String userId);
-
     List<AuthInDb> getUserAuths(String userId);
 
 }

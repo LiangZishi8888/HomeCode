@@ -28,6 +28,16 @@ public class CipherUtils {
         return cipher.doFinal(data);
     }
 
+    public static byte[] decryptWithSysKeyGetBytes(byte[] srcData){
+        try {
+            srcData=handleEcbPadding(srcData,Cipher.ENCRYPT_MODE);
+            return srcData;
+        } catch (Exception e) {
+            log.error("decrypt key failed ",e);
+        }
+        return null;
+    }
+
     public static String decryptWithSysKey(String cipherText) {
         String decryptStr = "";
         byte[] cipherData = ByteUtils.fromHexString(cipherText);

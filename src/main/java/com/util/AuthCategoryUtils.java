@@ -13,7 +13,7 @@ public class AuthCategoryUtils {
 
     static{
         List<String> authStrs = Arrays.stream(AuthCategory.values()).
-                map(au -> au.getStatus()).collect(Collectors.toList());
+                map(au -> au.getName()).collect(Collectors.toList());
         for(String s:authStrs){
             authStrSet.add(s);
         }

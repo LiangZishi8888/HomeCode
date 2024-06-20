@@ -2,25 +2,21 @@
    "appCreate1": {
       "userId":"123456",
       "accountName":"Eric",
-      "role":"admin",
-      "signature":"f2661eea8d03db7e22f43a3e14a21549"
+      "role":"admin"
    },
    "appCreate2":{
       "userId":"123401",
       "accountName":"Bob",
-      "role":"user",
-      "signature":"c934a42207b9b695c6a0ef0b5e3b67a3"
+      "role":"user"
     },
    "appCreate3":{
       "userId":"123402",
       "accountName":"Lisa",
-      "role":"user",
-      "signature":"06d13b606da151a02789ff1abd825634"
+      "role":"user"
    },
    "appCreate4":{
       "userId":"123404",
       "accountName":"NotExists",
-      "role":"user",
-      "signature":"9060e2c9fa1e0581749f4bacbecef858"
+      "role":"user"
    }
 }

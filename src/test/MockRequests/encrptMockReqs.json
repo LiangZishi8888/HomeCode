@@ -1,0 +1,9 @@
+// this is only for comparison with original mockReq
+{
+  "appCreate1": {
+    "userId":"123456",
+    "accountName":"Eric",
+    "role":"admin"
+  },
+  "encryptCreate1": {"reqData":"b11b934632ed55779aff1ce6a8a6487b27899a824ed162eceb36cb856c2c464e21d1df62101c36d76931cd536cb39ab16413224b8584a235cc5c9f816fd71dfba26273fe094aa03f102067806219f8e1e3ca35fd09d7698ea0a3d40365941714598fe908e93ff580bb25d68dae259deb"}
+}

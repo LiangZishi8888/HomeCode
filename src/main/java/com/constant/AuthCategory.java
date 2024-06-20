@@ -13,9 +13,9 @@ public enum AuthCategory {
 
     AUTHC("authc");
 
-    private String status;
+    private String name;
 
     AuthCategory(String status) {
-        this.status = status;
+        this.name = status;
     }
 }

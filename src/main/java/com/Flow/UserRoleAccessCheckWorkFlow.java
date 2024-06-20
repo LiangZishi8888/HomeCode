@@ -8,13 +8,14 @@ import com.entity.DTO.User;
 import com.entity.UserLogin;
 import com.entity.resp.UserLoginAccessCheckResp;
 import com.entity.req.UserLoginRequest;
-import com.entity.req.UserLoginRequestWithSign;
 import com.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.h2.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -25,17 +26,11 @@ public class UserRoleAccessCheckWorkFlow {
     @Autowired
     UserService userService;
 
-    public UserLoginAccessCheckResp doProcess(UserLoginRequestWithSign userLoginRequestWithSign) {
+    public UserLoginAccessCheckResp doProcess(UserLoginRequest userLoginRequest) {
 
         LoginAccessCheckContext loginAccessCheckContext = new LoginAccessCheckContext();
 
-        //check signature
-        // system design that a user login with key encrpty its id
-        // so the signature decrypt should same as it id
-        // i just demostrate that theroy
-        // in practice system keys are not symmetric in this situation
-        // this system using symmetric way of SM4 alogrithum
-        checkUserLoginRequestSignature(userLoginRequestWithSign, loginAccessCheckContext);
+        buildUserLoginContext(userLoginRequest, loginAccessCheckContext);
 
         //check user role whether valid
         // role -- admin user
@@ -45,15 +40,16 @@ public class UserRoleAccessCheckWorkFlow {
 
         //update user log-in time
         // db maintains last_login_time
-        //if a user successfully access last_login_time shoud be update for access time
-        // if a user is refused by system e.g try to access via admin role while it only have user permission
-        // system will not update its last_login_time
-        // db dont record login time this value only update in memory to build resp to terminal
+        //if a user successfully access last_login_time shoud be update for current access time
+        // a user is refused by system e.g try to access via admin role while it only have user permission
+        // system will not update its last_login_time if user status is not ACTIVE
+        // only useid username compatible with db will pass to the following process
         updateUserLoginTime(loginAccessCheckContext);
 
         // return resp
         // value of last_login_time in resp shows previous login_time in db
-        // if user successfully access then last_login_time in db has already updated
+        // checkResp show success means user pass all check and login_time updated
+        // if user status is not ACTIVE will not update
         return UserLoginAccessCheckResp.createAccessCheckResultResp(userLoginCheckResult,
                 loginAccessCheckContext.getUserLogin());
     }
@@ -69,41 +65,41 @@ public class UserRoleAccessCheckWorkFlow {
     public Boolean checkUserRoleAndStatus(AccessCheckContext accessCheckContext) {
         UserLogin userLogin=accessCheckContext.getUserLogin();
         Objects.requireNonNull(userLogin);
-        Boolean adminOnly = Optional.ofNullable(accessCheckContext.getAdminOnly()).orElse(Boolean.FALSE);
-        User userInDb = userService.checkUserRole(userLogin, adminOnly);
-        accessCheckContext.setUser(userInDb);
 
-        if (Objects.isNull(userInDb)
-                ||
-                !StringUtils.equals(userLogin.getAccountName(),userInDb.getAccountName()))
-            return Boolean.FALSE;
+        //this propertiy will modify in previous stage buildContext in different work flow
+        boolean adminOnly = Optional.ofNullable(accessCheckContext.getAdminOnly())
+                .orElse(Boolean.FALSE);
+        User userInDb = userService.checkUserRole(userLogin, adminOnly);
+        List<User> contextUsers=Optional.ofNullable(accessCheckContext.getUsers())
+                .orElseGet(ArrayList::new);
+        contextUsers.add(userInDb);
+        accessCheckContext.setUsers(contextUsers);
+
+        // userInDb is null then will throw ex in line71
+        // this is check account Name Consistency only in access interface
+        // in grant interface this will skipp
+        if (StringUtils.isNotEmpty(userLogin.getAccountName())&&
+                !StringUtils.equals(userLogin.getAccountName(),userInDb.getAccountName())){
+            log.error(" user id is not compatible with its accountName,id:{},accountName:{}",
+                    userLogin.getUserId(),userLogin.getAccountName());
+            throw new AuthException(AuthDesc.USER_NOT_EXIST,null);
+        }
         Boolean isUserLoginCapable = userService.checkUserStatus(userInDb.getStatus());
 
         if (!isUserLoginCapable) {
             log.warn("user status not support login,accountName: {},userStatus: {}",
                     userInDb.getAccountName(), userInDb.getStatus());
         }
+
+        //only valid userId and userName will execute this line and status not active return check res false
         accessCheckContext.setCheckResult(isUserLoginCapable);
         return isUserLoginCapable;
     }
 
-    private void checkUserLoginRequestSignature(UserLoginRequestWithSign userLoginRequestWithSign,
-                                                LoginAccessCheckContext loginAccessCheckContext) {
-        buildLoginSignatureCheckContext(userLoginRequestWithSign, loginAccessCheckContext);
-        try {
-            userService.checkUserSignature(userLoginRequestWithSign.getSignature(),
-                    userLoginRequestWithSign.getUserId());
-        } catch (Exception e) {
-            log.error("UserSignature check failed",e);
-            throw new AuthException(AuthDesc.USER_SIGNATURE_INVALID,null);
-        }
-    }
-
-    private void buildLoginSignatureCheckContext(UserLoginRequestWithSign userLoginRequestWithSign,
-                                                 LoginAccessCheckContext loginAccessCheckContext) {
-        loginAccessCheckContext.setUserLoginRequest(userLoginRequestWithSign);
-        loginAccessCheckContext.setSignature(userLoginRequestWithSign.getSignature());
-        UserLoginRequest standardReq = userLoginRequestWithSign;
+    private void buildUserLoginContext(UserLoginRequest userLoginRequest,
+                                       LoginAccessCheckContext loginAccessCheckContext) {
+        loginAccessCheckContext.setUserLoginRequest(userLoginRequest);
+        UserLoginRequest standardReq = userLoginRequest;
         loginAccessCheckContext.setUserLogin(UserLogin.createUserLogin(standardReq));
     }
 }

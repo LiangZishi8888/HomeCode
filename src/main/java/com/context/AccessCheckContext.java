@@ -8,20 +8,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccessCheckContext {
 
-    Boolean checkResult;
+    private Boolean checkResult;
 
-    Boolean adminOnly;
+    private Boolean adminOnly;
 
-    UserLogin userLogin;
+    private UserLogin userLogin;
 
-    //only effect in grant access interface
-    GrantUserLogin adminUserLogin;
-
-    User user;
+    private List<User> users;
 }

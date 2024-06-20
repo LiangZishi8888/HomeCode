@@ -4,11 +4,13 @@ public enum AuthDesc {
 
     SUCCESS("000000","Success"),
 
+    REQ_DECRPT_FAILED("RQ00001","Encrypt_Req_Failed"),
+
     DATA_TRANSFORM_ERROR("AUT0001", "Json_Convert_Error"),
 
     DB_INTERNAL_ERROR("AUT0002","Db_Internal_Error"),
 
-    USER_SIGNATURE_INVALID("AUT0003","User_Signature_Invalid"),
+    USER_NEED_ADMIN_PERMISSION("AUT0003","User_Need_Admin_Permission"),
 
     USER_ROLE_ERROR("AUT0004","User_Role_Failed"),
 

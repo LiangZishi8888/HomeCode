@@ -1,5 +1,8 @@
 package com.constant;
 
+import lombok.Getter;
+
+@Getter
 public enum AuthStatus {
 
     ACTIVE("active"),
