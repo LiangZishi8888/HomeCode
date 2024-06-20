@@ -55,4 +55,14 @@ public abstract class JsonUtil {
         }
     }
 
+    public static String getPropertyValueFromJson(String json,String propertyName){
+        try {
+            JsonNode jsonNode = objectMapper.readValue(json, JsonNode.class);
+            return jsonNode.get(propertyName).asText();
+        }catch (Exception e){
+            log.error("convert data failed", e);
+            throw new AuthException(AuthDesc.DATA_TRANSFORM_ERROR,null);
+        }
+    }
+
 }

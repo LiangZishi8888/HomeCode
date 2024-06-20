@@ -1,15 +1,18 @@
 package com.entity.resp;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
-public class BaseResp {
+@AllArgsConstructor
+public class BaseResp<T> {
 
     private String resultCode;
 
     private String resultDescription;
+
+    private String errorMsg;
+
+    T respData;
 }

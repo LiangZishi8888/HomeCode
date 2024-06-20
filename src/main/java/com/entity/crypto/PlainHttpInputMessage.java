@@ -6,19 +6,25 @@ import com.entity.req.EncryptReq;
 import com.util.JsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import sun.misc.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
+@Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlainHttpInputMessage implements HttpInputMessage {
+
+    private static final String encryptPropertyName="reqData";
 
     private HttpHeaders httpHeaders;
 
@@ -28,9 +34,14 @@ public class PlainHttpInputMessage implements HttpInputMessage {
 
     public PlainHttpInputMessage(HttpInputMessage inputMessage,MethodParameter methodParameter) throws IOException {
         this.httpHeaders=inputMessage.getHeaders();
-
-
-        if(methodParameter.hasMethodAnnotation(PostMapping.class)){
+        if(methodParameter.hasMethodAnnotation(PostMapping.class)
+            &&methodParameter.hasMethodAnnotation(DecryptRequest.class)){
+            String encryptData = JsonUtil.getPropertyValueFromJson( IOUtils.toString(
+                    inputMessage.getBody(), "UTF-8"),
+                    encryptPropertyName);
+            log.info(encryptData);
+            this.body= IOUtils.toInputStream(CipherUtils.decryptWithSysKey(encryptData),
+                    "UTF-8");
         }else{
             this.body=inputMessage.getBody();
         }

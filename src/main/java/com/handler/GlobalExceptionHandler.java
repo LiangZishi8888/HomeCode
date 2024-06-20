@@ -22,6 +22,7 @@ public class GlobalExceptionHandler{
          BaseResp resp=new BaseResp();
          resp.setResultCode(contollerEx.getResultCode());
          resp.setResultDescription(contollerEx.getResultDescription());
+         resp.setErrorMsg(contollerEx.getErrorMsg());
          return resp;
     }
 }

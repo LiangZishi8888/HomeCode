@@ -6,6 +6,7 @@ import com.constant.UserRole;
 import com.constant.UserStatus;
 import com.dao.UserDao;
 import com.entity.DTO.User;
+import com.entity.crypto.DecryptBodyAdvice;
 import com.entity.req.UserLoginRequest;
 import com.entity.resp.UserLoginAccessCheckResp;
 import com.handler.GlobalExceptionHandler;
@@ -22,9 +23,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.utils.MockUtils.postPerform;
 
-/**
- * all the req in mockReqs file are signature valid with userId
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:applicationContext.xml"})
 public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
@@ -40,11 +38,15 @@ public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
     private GlobalExceptionHandler globalExceptionHandler;
 
     @Autowired
+    private DecryptBodyAdvice decryptBodyAdvice;
+
+    @Autowired
     private UserDao userDao;
 
     @Before
     public  void init() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(authorityController,globalExceptionHandler).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(
+                authorityController,globalExceptionHandler,decryptBodyAdvice).build();
     }
 
     @Test

@@ -1,5 +1,8 @@
 package com.constant;
 
+import lombok.Getter;
+
+@Getter
 public class AuthException extends RuntimeException{
 
     String resultCode;
