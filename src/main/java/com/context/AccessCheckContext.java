@@ -1,8 +1,6 @@
 package com.context;
 
-import com.entity.DTO.User;
-import com.entity.GrantUserLogin;
-import com.entity.UserLogin;
+import com.entity.DTO.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +18,7 @@ public class AccessCheckContext {
 
     private Boolean adminOnly;
 
-    private UserLogin userLogin;
+    private String accessTime;
 
-    private List<User> users;
+    private List<UserDTO> users;
 }

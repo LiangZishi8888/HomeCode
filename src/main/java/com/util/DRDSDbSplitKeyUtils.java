@@ -1,5 +1,6 @@
 package com.util;
 
+import com.generator.impl.AuthAssoNoGenerator;
 import org.h2.util.StringUtils;
 import org.springframework.util.Assert;
 

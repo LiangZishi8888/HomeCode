@@ -5,11 +5,11 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UpperCaseFiledNameEnumHandler<S extends Enum<S>> extends EnumTypeHandler<S> {
+public class UpperCaseFieldNameEnumHandler<S extends Enum<S>> extends EnumTypeHandler<S> {
 
     private final Class<S> targetType;
 
-    public UpperCaseFiledNameEnumHandler(Class<S> type) {
+    public UpperCaseFieldNameEnumHandler(Class<S> type) {
         super(type);
         this.targetType = type;
     }

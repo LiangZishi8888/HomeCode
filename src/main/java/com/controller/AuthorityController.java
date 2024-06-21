@@ -25,14 +25,14 @@ public class AuthorityController {
 
     @PostMapping("/role/access")
     @DecryptRequest
-    public BaseResp<UserLoginAccessCheckResp> checkUserAccess(@RequestBody UserLoginRequest userLoginRequest){
+    public UserLoginAccessCheckResp checkUserAccess(@RequestBody UserLoginRequest userLoginRequest){
         log.info(userLoginRequest.toString());
         return userRoleAccessCheckWorkFlow.doProcess(userLoginRequest);
     }
 
     @PostMapping("/admin/addUser")
     public BaseResp addUserResources(@RequestBody AuthorityApplyRequest authorityApplyRequet){
-        //return adminGrantAccessWorkFlow.doProcess(authorityApplyRequet);
-        return null;
+        return adminGrantAccessWorkFlow.doProcess(authorityApplyRequet);
+
     }
 }

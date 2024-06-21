@@ -1,7 +1,6 @@
 package com.entity;
 
 import com.constant.UserStatus;
-import com.entity.req.AuthorityApplyRequest;
 import com.entity.req.UserLoginRequest;
 import com.util.DateUtils;
 import lombok.*;
@@ -13,24 +12,24 @@ import lombok.*;
 @AllArgsConstructor
 public class UserLogin {
 
-    String userId;
+    private String userId;
 
-    String accountName;
+    private String accountName;
 
-    String role;
+    private String role;
 
-    String lastLoginTime;
+    private String lastLoginTime;
 
-    String loginTime;
+    private String loginTime;
 
-    UserStatus status;
+    private UserStatus status;
 
     public static UserLogin createUserLogin(UserLoginRequest userLoginRequest) {
         return UserLogin.builder()
                 .userId(userLoginRequest.getUserId())
                 .role(userLoginRequest.getRole())
                 .accountName(userLoginRequest.getAccountName())
-                .loginTime(DateUtils.getCurrentDateStr())
+                .loginTime(DateUtils.getCurrentDateSecondsStr())
                 .build();
     }
 }

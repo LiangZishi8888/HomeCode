@@ -2,25 +2,29 @@ package com.constant;
 
 public enum AuthDesc {
 
-    SUCCESS("000000","Success"),
-
-    REQ_DECRPT_FAILED("RQ00001","Encrypt_Req_Failed"),
+    SUCCESS("000000", "Success"),
 
     DATA_TRANSFORM_ERROR("AUT0001", "Json_Convert_Error"),
 
-    DB_INTERNAL_ERROR("AUT0002","Db_Internal_Error"),
+    DB_INTERNAL_ERROR("AUT0002", "Db_Internal_Error"),
 
-    USER_NEED_ADMIN_PERMISSION("AUT0003","User_Need_Admin_Permission"),
+    USER_NEED_ADMIN_PERMISSION("AUT0003", "User_Need_Admin_Permission"),
 
-    USER_ROLE_ERROR("AUT0004","User_Role_Failed"),
+    USER_ROLE_ERROR("AUT0004", "User_Role_Failed"),
 
-    USER_NOT_EXIST("AUT0005","User_Not_Exist"),
+    USER_NOT_EXIST("AUT0005", "User_Not_Exist"),
 
-    UNOWN_USER_STATUS("AUT0006","Unown_User_Status"),
+    UNOWN_USER_STATUS("AUT0006", "Unown_User_Status"),
 
-    INVALID_AUTH_APPLY("AUT0007","Auth_Not_Exists"),
+    INVALID_AUTH_APPLY("AUT0007", "Auth_Not_Exists"),
 
-    USER_STATUS_NOT_ACTIVE("AUT0008","User_Not_Active");
+    USER_STATUS_NOT_ACTIVE("AUT0008", "User_Not_Active"),
+
+    AUTH_NOT_EXIST("AUT0009", "Auth_Not_Exists"),
+
+    SYS_INTERNAL_ERROR("SY0001", "Sys_Internal_Error"),
+
+    REQ_DECRPT_FAILED("SY0002", "Encrypt_Req_Failed");
 
 
     public String resCode;

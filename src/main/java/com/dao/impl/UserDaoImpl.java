@@ -3,8 +3,8 @@ package com.dao.impl;
 import com.constant.AuthException;
 import com.constant.AuthDesc;
 import com.dao.UserDao;
-import com.entity.DTO.AuthInDb;
-import com.entity.DTO.User;
+import com.entity.DTO.AuthDTO;
+import com.entity.DTO.UserDTO;
 import com.mapper.UserMapper;
 import com.util.DRDSDbSplitKeyUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +21,9 @@ public class UserDaoImpl implements UserDao {
     UserMapper userMapper;
 
     @Override
-    public User findUserById(String userId) {
+    public UserDTO findUserById(String userId) {
         try{
-            User user=userMapper.findUserById(DRDSDbSplitKeyUtils.calculateDbSplitKey(userId),
+            UserDTO user=userMapper.findUserById(DRDSDbSplitKeyUtils.calculateDbSplitKey(userId),
                     userId);
             return user;
         }catch (Exception e){
@@ -46,7 +46,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<AuthInDb> queryUserAuths(String userId) {
+    public List<AuthDTO> queryUserAuths(String userId) {
         return null;
     }
 }

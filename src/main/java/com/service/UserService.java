@@ -2,15 +2,15 @@ package com.service;
 
 import com.constant.UserStatus;
 
-import com.entity.DTO.AuthInDb;
-import com.entity.DTO.User;
+import com.entity.DTO.AuthDTO;
+import com.entity.DTO.UserDTO;
 import com.entity.UserLogin;
 
 import java.util.List;
 
 public interface UserService {
 
-    User checkUserRole(UserLogin userLogin,boolean adminOnly);
+    UserDTO checkUserRole(UserLogin userLogin, boolean adminOnly);
 
     boolean isLoginUserAdmin(UserLogin user);
 
@@ -18,6 +18,6 @@ public interface UserService {
 
     Boolean checkUserStatus(UserStatus userStatus);
 
-    List<AuthInDb> getUserAuths(String userId);
+    List<AuthDTO> getUserAuths(String userId);
 
 }

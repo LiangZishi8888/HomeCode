@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthInDb {
+public class AuthDTO {
 
     private Integer dbSplitKey;
 

@@ -5,10 +5,9 @@ import com.constant.AuthException;
 import com.constant.UserRole;
 import com.constant.UserStatus;
 import com.dao.UserDao;
-import com.entity.DTO.AuthInDb;
-import com.entity.DTO.User;
+import com.entity.DTO.AuthDTO;
+import com.entity.DTO.UserDTO;
 import com.entity.UserLogin;
-import com.entity.crypto.CipherUtils;
 import com.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.util.StringUtils;
@@ -29,8 +28,8 @@ public class UserServiceImpl implements UserService {
     // in grant resource situation only adminOnly user can access this system
     // so that we can reuse this part of code
     @Override
-    public User checkUserRole(UserLogin userLogin, boolean adminOnly) {
-        User userInDb = userDao.findUserById(userLogin.getUserId());
+    public UserDTO checkUserRole(UserLogin userLogin, boolean adminOnly) {
+        UserDTO userInDb = userDao.findUserById(userLogin.getUserId());
         if (Objects.isNull(userInDb)) {
             log.error("user not exists,userId : {}", userLogin.getUserId());
             throw new AuthException(AuthDesc.USER_NOT_EXIST,userLogin.getUserId());
@@ -85,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuthInDb> getUserAuths(String userId) {
+    public List<AuthDTO> getUserAuths(String userId) {
         return null;
     }
 

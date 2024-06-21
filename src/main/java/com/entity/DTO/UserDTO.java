@@ -10,7 +10,7 @@ import org.apache.ibatis.type.EnumTypeHandler;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDTO {
 
     Integer dpSplitKey;
 

@@ -1,5 +1,6 @@
 package com.context;
 
+import com.entity.UserLogin;
 import com.entity.req.AuthorityApplyRequest;
 import com.entity.req.UserLoginRequest;
 import lombok.Getter;
@@ -9,8 +10,9 @@ import lombok.Setter;
 @Setter
 public class LoginAccessCheckContext extends AccessCheckContext{
 
+    private UserLogin userLogin;
 
-    UserLoginRequest userLoginRequest;
+    private UserLoginRequest userLoginRequest;
 
     // define this class for further reuse for specific login
 

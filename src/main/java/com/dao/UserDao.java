@@ -1,15 +1,15 @@
 package com.dao;
 
-import com.entity.DTO.AuthInDb;
-import com.entity.DTO.User;
+import com.entity.DTO.AuthDTO;
+import com.entity.DTO.UserDTO;
 
 import java.util.List;
 
 public interface UserDao {
 
-    User findUserById(String userId);
+    UserDTO findUserById(String userId);
 
     int updateLoginTimeById(String userId,String loginTime);
 
-    List<AuthInDb> queryUserAuths(String userId);
+    List<AuthDTO> queryUserAuths(String userId);
 }

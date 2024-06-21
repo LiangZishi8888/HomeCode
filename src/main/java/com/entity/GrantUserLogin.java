@@ -6,7 +6,8 @@ import com.util.DateUtils;
 import lombok.*;
 
 /**
- *  a GrantUserLogin contains adminUser and grantUser id
+ *  a GrantUserLogin
+ *  contains adminUser and grantUser id
  */
 @Getter
 @Setter
@@ -21,11 +22,15 @@ public class GrantUserLogin {
 
     String accessTime;
 
+    String userName;
+
+    String adminUserName;
+
     public static GrantUserLogin createGrantUserLogin(AuthorityApplyRequest authorityApplyRequest) {
         return GrantUserLogin.builder()
                 .userId(authorityApplyRequest.getUserId())
                 .adminUserId(authorityApplyRequest.getAdminUserId())
-                .accessTime(DateUtils.getCurrentDateStr())
+                .accessTime(DateUtils.getCurrentDateSecondsStr())
                 .build();
     }
 

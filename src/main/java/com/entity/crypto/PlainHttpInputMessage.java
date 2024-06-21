@@ -39,7 +39,7 @@ public class PlainHttpInputMessage implements HttpInputMessage {
             String encryptData = JsonUtil.getPropertyValueFromJson( IOUtils.toString(
                     inputMessage.getBody(), "UTF-8"),
                     encryptPropertyName);
-            log.info(encryptData);
+            log.info("successfully intercept request, encryptData: ",encryptData);
             this.body= IOUtils.toInputStream(CipherUtils.decryptWithSysKey(encryptData),
                     "UTF-8");
         }else{

@@ -1,5 +1,6 @@
 package com.entity;
 
+import com.entity.DTO.AuthDTO;
 import lombok.*;
 
 @NoArgsConstructor
@@ -13,17 +14,14 @@ public class AuthCategoryEntity {
 
     private boolean isUserHeld;
 
-    private boolean isStatusActive;
+    private String authStatus;
 
-    // auth name whether is accpetable by the system
-    private boolean isValid;
+    private AuthDTO authInDb;
 
-    public static AuthCategoryEntity createAuthCategoryEntity(String authName){
+    public static AuthCategoryEntity initAuthCategoryEntity(String authName){
         return AuthCategoryEntity.builder()
                 .authName(authName)
                 .isUserHeld(Boolean.FALSE)
-                .isStatusActive(Boolean.FALSE)
-                .isValid(Boolean.FALSE)
                 .build();
     }
 }

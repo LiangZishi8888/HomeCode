@@ -1,6 +1,5 @@
 package com.context;
 
-import com.constant.AuthCategory;
 import com.entity.AuthCategoryEntity;
 import com.entity.GrantUserLogin;
 import com.entity.req.AuthorityApplyRequest;
@@ -17,13 +16,14 @@ public class AuthGrantAccessCheckContext extends AccessCheckContext{
 
     Boolean grantUserCheckResult;
 
+    /**
+     * used for divdied into 2 userLogin entity for data base query
+     */
     private GrantUserLogin usersInfo;
 
     AuthorityApplyRequest authorityApplyRequest;
 
-    private List<AuthCategoryEntity> successAddedAuths;
-
-    private List<AuthCategoryEntity> userHoldAuths;
+    private List<AuthCategoryEntity> possibleGrantAuths;
 
     private List<AuthCategoryEntity> expectedGrantAuths;
 
