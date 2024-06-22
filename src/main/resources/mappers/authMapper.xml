@@ -9,8 +9,8 @@
         <result property="userName" column="user_name" javaType="String" jdbcType="VARCHAR"/>
         <result property="adminUserId" column="admin_user_id" javaType="String" jdbcType="VARCHAR"/>
         <result property="adminUserName" column="admin_user_name" javaType="String" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" javaType="java.sql.Date" jdbcType="TIMESTAMP"/>
-        <result property="lastModifyTime" column="last_modify_time" javaType="java.sql.Date" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result property="lastModifyTime" column="last_modify_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
         <result property="authCategory" column="auth_category" javaType="com.constant.AuthStatus" jdbcType="VARCHAR"
                 typeHandler="com.handler.UpperCaseFieldNameEnumHandler"/>
         <result property="status" column="status" javaType="com.constant.AuthStatus" jdbcType="VARCHAR"

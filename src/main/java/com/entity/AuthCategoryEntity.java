@@ -1,7 +1,10 @@
 package com.entity;
 
 import com.entity.DTO.AuthDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +24,7 @@ public class AuthCategoryEntity {
     /**
      * the result after system access db whether user hold
      */
+    @JsonIgnore
     private boolean isUserHeld;
 
     /**
@@ -31,9 +35,15 @@ public class AuthCategoryEntity {
     private String authStatus;
 
     /**
+     * to map the time of auths grant back to resp
+     */
+    private Date  grantTime;
+
+    /**
      * the mapping dbEntity of this auth name
      * only auth exists effect
      */
+    @JsonIgnore
     private AuthDTO authInDb;
 
     public static AuthCategoryEntity initAuthCategoryEntity(String authName){

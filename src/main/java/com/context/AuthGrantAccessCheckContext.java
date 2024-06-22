@@ -18,11 +18,6 @@ import java.util.List;
 public class AuthGrantAccessCheckContext extends AccessCheckContext{
 
     /**
-     *
-     */
-    Boolean grantUserCheckResult;
-
-    /**
      * used for divdied into 2 userLogin entity for data base query
      * and map some information back to context
      * @see AuthGrantAccessCheckContext

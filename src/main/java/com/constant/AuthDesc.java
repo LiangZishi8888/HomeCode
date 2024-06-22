@@ -10,8 +10,6 @@ public enum AuthDesc {
 
     USER_NEED_ADMIN_PERMISSION("AUT0003", "User_Need_Admin_Permission"),
 
-    USER_ROLE_ERROR("AUT0004", "User_Role_Failed"),
-
     USER_NOT_EXIST("AUT0005", "User_Not_Exist"),
 
     UNOWN_USER_STATUS("AUT0006", "Unown_User_Status"),

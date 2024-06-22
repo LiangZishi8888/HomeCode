@@ -1,13 +1,11 @@
 package com.context;
 
-import com.entity.DTO.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
-import java.util.List;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -28,8 +26,4 @@ public class AccessCheckContext {
      */
     private Date accessTime;
 
-    /**
-     *
-     */
-    private List<UserDTO> users;
 }

@@ -2,7 +2,9 @@ package com.Flow;
 
 import com.constant.AuthDesc;
 import com.constant.AuthException;
+import com.constant.UserRole;
 import com.context.LoginAccessCheckContext;
+import com.dao.UserDao;
 import com.entity.DTO.UserDTO;
 import com.entity.UserLogin;
 import com.entity.resp.UserLoginAccessCheckResp;
@@ -25,6 +27,9 @@ public class UserRoleAccessCheckWorkFlow {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserDao userDao;
 
     public UserLoginAccessCheckResp doProcess(UserLoginRequest userLoginRequest) {
 
@@ -63,6 +68,7 @@ public class UserRoleAccessCheckWorkFlow {
             userService.updateUserLoginTime(userLogin);
     }
 
+
     public Boolean checkUserRoleAndStatus(LoginAccessCheckContext accessCheckContext) {
         UserLogin userLogin = accessCheckContext.getUserLogin();
         Objects.requireNonNull(userLogin);
@@ -71,10 +77,7 @@ public class UserRoleAccessCheckWorkFlow {
         boolean adminOnly = Optional.ofNullable(accessCheckContext.getAdminOnly())
                 .orElse(Boolean.FALSE);
         UserDTO userInDb = userService.checkUserRole(userLogin, adminOnly);
-        List<UserDTO> contextUsers = Optional.ofNullable(accessCheckContext.getUsers())
-                .orElseGet(ArrayList::new);
-        contextUsers.add(userInDb);
-        accessCheckContext.setUsers(contextUsers);
+        userLogin.setStatus(userInDb.getStatus());
 
         // userInDb is null then will throw ex in line71
         // this is check account Name Consistency only in access interface
@@ -83,7 +86,7 @@ public class UserRoleAccessCheckWorkFlow {
                 !StringUtils.equals(userLogin.getAccountName(), userInDb.getAccountName())) {
             log.error(" user id is not compatible with its accountName,id:{},accountName:{}",
                     userLogin.getUserId(), userLogin.getAccountName());
-            throw new AuthException(AuthDesc.USER_NOT_EXIST, null);
+            throw new AuthException(AuthDesc.USER_NOT_EXIST, userLogin.getUserId());
         }
         Boolean isUserLoginCapable = userService.checkUserStatus(userInDb.getStatus());
 
@@ -100,7 +103,11 @@ public class UserRoleAccessCheckWorkFlow {
     private void buildUserLoginContext(UserLoginRequest userLoginRequest,
                                        LoginAccessCheckContext loginAccessCheckContext) {
         loginAccessCheckContext.setUserLoginRequest(userLoginRequest);
-        loginAccessCheckContext.setAccessTime(DateUtils.getCurrentDateSecondsStr());
+        loginAccessCheckContext.setAccessTime(DateUtils.getCurrentDate());
         loginAccessCheckContext.setUserLogin(UserLogin.createUserLogin(userLoginRequest));
+        if (StringUtils.equals(userLoginRequest.getRole(), UserRole.ADMIN.getRole()))
+            loginAccessCheckContext.setAdminOnly(Boolean.TRUE);
+        else
+            loginAccessCheckContext.setAdminOnly(Boolean.FALSE);
     }
 }

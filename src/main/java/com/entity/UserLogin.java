@@ -1,11 +1,12 @@
 package com.entity;
 
+import com.constant.UserRole;
 import com.constant.UserStatus;
 import com.entity.req.UserLoginRequest;
 import com.util.DateUtils;
 import lombok.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Builder
 @Getter
@@ -60,6 +61,17 @@ public class UserLogin {
                 .role(userLoginRequest.getRole())
                 .accountName(userLoginRequest.getAccountName())
                 .loginTime(DateUtils.getCurrentDate())
+                .build();
+    }
+
+    // this can also implement by BeanUtils.copyProperties
+    // Since we need reuse userservice.checkRoleStatus()
+    public static UserLogin buildUserLogin(GrantUserLogin grantUserLogin, boolean isAdmin) {
+        String userId = isAdmin ? grantUserLogin.getAdminUserId() : grantUserLogin.getUserId();
+        String role = isAdmin ? UserRole.ADMIN.getRole() : UserRole.USER.getRole();
+        return UserLogin.builder()
+                .userId(userId)
+                .role(role)
                 .build();
     }
 }

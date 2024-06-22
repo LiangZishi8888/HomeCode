@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -33,7 +34,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public int updateLoginTimeById(String userId,String loginTime) {
+    public int updateLoginTimeById(String userId, Date loginTime) {
         int successNum;
         try{
              successNum=userMapper.updateUserLoginTimeById(DRDSDbSplitKeyUtils.calculateDbSplitKey(userId),

@@ -2,7 +2,7 @@ package com.entity.DTO;
 
 import lombok.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Builder
 @Getter

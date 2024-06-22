@@ -27,12 +27,15 @@ public abstract class MockUtils {
     }
     public static<T> MockHttpServletRequestBuilder buildHttpPostReq(String url, Object req,boolean isEncrypt){
         String reqBody=JsonUtil.objToJson(req);
-        if(isEncrypt)
-            reqBody=CipherUtils.encryptWithSysKey(reqBody);
         System.out.println(reqBody);
-        reqBody=JsonUtil.objToJson(EncryptReq.builder()
-                .reqData(reqBody).build());
-        System.out.println(reqBody);
+        System.out.println();
+        if(isEncrypt) {
+            reqBody = CipherUtils.encryptWithSysKey(reqBody);
+            reqBody = JsonUtil.objToJson(EncryptReq.builder()
+                    .reqData(reqBody).build());
+            System.out.println(reqBody);
+            System.out.println();
+        }
         return MockMvcRequestBuilders.post(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(reqBody)

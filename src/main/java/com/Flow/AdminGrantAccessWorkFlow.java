@@ -7,7 +7,9 @@ import com.entity.AuthCategoryEntity;
 import com.entity.DTO.AuthDTO;
 import com.entity.DTO.UserDTO;
 import com.entity.GrantUserLogin;
+import com.entity.UserLogin;
 import com.entity.req.AuthorityApplyRequest;
+import com.entity.resp.AuthGrantResp;
 import com.service.AuthService;
 import com.service.UserService;
 import com.util.DateUtils;
@@ -32,7 +34,7 @@ public class AdminGrantAccessWorkFlow {
     @Autowired
     AuthService authService;
 
-    public void doProcess(@RequestBody AuthorityApplyRequest authorityApplyRequest) {
+    public AuthGrantResp doProcess(@RequestBody AuthorityApplyRequest authorityApplyRequest) {
 
         AuthGrantAccessCheckContext authGrantAccessCheckContext = new AuthGrantAccessCheckContext();
 
@@ -42,13 +44,14 @@ public class AdminGrantAccessWorkFlow {
         preCheckExpectAuthsValidation(authGrantAccessCheckContext.getExpectedGrantAuths());
 
         // check adminUser and User
-        checkUsersStatusAndRole(authGrantAccessCheckContext);
+        checkUsersStatusAndRole(authGrantAccessCheckContext.getUsersInfo());
 
         //will query in db and wrap to context
-        checkUserExistsAuthStatus(authGrantAccessCheckContext);
+        checkUserExistsAuthStatus(authGrantAccessCheckContext.getExpectedGrantAuths(),
+                authGrantAccessCheckContext.getUsersInfo());
 
         dispatchAuthsAndUpdate(authGrantAccessCheckContext);
-
+        return null;
     }
 
     private void buildAuthGrantAccessCheckContext(AuthorityApplyRequest authorityApplyRequest,
@@ -75,17 +78,17 @@ public class AdminGrantAccessWorkFlow {
         }
     }
 
-    private void checkUsersStatusAndRole(AuthGrantAccessCheckContext accessCheckContext) {
+    private void checkUsersStatusAndRole(GrantUserLogin grantUserLogin) {
         // if the user is not admin will throw exception in service method
-        UserDTO adminUser = userService.checkUserRole(GrantUserLogin.buildUserLogin(
-                accessCheckContext.getUsersInfo(), Boolean.TRUE), true);
+        UserDTO adminUser = userService.checkUserRole(UserLogin.buildUserLogin(
+                grantUserLogin, Boolean.TRUE), true);
         //same as previous if check fail will throw exception
-        UserDTO grantUser = userService.checkUserRole(GrantUserLogin.buildUserLogin(
-                accessCheckContext.getUsersInfo(), Boolean.FALSE), false);
+        UserDTO grantUser = userService.checkUserRole(UserLogin.buildUserLogin(
+                grantUserLogin, Boolean.FALSE), false);
 
         //map UsersInfo to context for update or insert to auth_table
-        accessCheckContext.getUsersInfo().setUserName(grantUser.getAccountName());
-        accessCheckContext.getUsersInfo().setAdminUserName(adminUser.getAccountName());
+        grantUserLogin.setUserName(grantUser.getAccountName());
+        grantUserLogin.setAdminUserName(adminUser.getAccountName());
 
         boolean isAdminUserActive = userService.checkUserStatus(adminUser.getStatus());
         boolean isGrantUserActive = userService.checkUserStatus(grantUser.getStatus());
@@ -96,24 +99,17 @@ public class AdminGrantAccessWorkFlow {
             log.error("User status is not active, userId: " + userId);
             throw new AuthException(AuthDesc.USER_STATUS_NOT_ACTIVE, userId);
         }
-//        List<UserDTO> users = Optional.ofNullable(accessCheckContext.getUsers())
-//                .orElseGet(ArrayList::new);
-//        // no need add admin to the context
-//        users.add(grantUser);
-//        accessCheckContext.setUsers(users);
     }
 
-    private void checkUserExistsAuthStatus(AuthGrantAccessCheckContext authGrantAccessCheckContext) {
+    private void checkUserExistsAuthStatus(List<AuthCategoryEntity> expectAuths, GrantUserLogin grantUserLogin) {
 
         // this already been set in buildcontext
-        List<AuthCategoryEntity> expectedAuths = authGrantAccessCheckContext.getExpectedGrantAuths();
-        Objects.requireNonNull(expectedAuths);
+        Objects.requireNonNull(expectAuths);
 
         // get tobeGrantedUser currently hold auths
-        List<AuthDTO> userAuths = userService.getUserAuths(authGrantAccessCheckContext
-                .getUsersInfo().getUserId());
+        List<AuthDTO> userAuths = userService.getUserAuths(grantUserLogin.getUserId());
 
-        updateExceptAuthsWithDbResult(userAuths, expectedAuths);
+        updateExceptAuthsWithDbResult(userAuths, expectAuths);
 
     }
 

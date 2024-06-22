@@ -2,34 +2,63 @@ package com.entity.resp;
 
 import com.constant.AuthDesc;
 import com.entity.UserLogin;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.util.DateUtils;
 import lombok.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+/**
+ * resp entity class of
+ * @see com.Flow.UserRoleAccessCheckWorkFlow
+ */
 public class UserLoginAccessCheckResp extends BaseResp {
 
-    private Boolean checkResult;
+    /**
+     * access result :
+     *          true system has record access behaviour
+     *          false system did not record access
+     */
+    private Boolean accessResult;
 
+    /**
+     * previous loginTime means user is exists in the system
+     */
+    @JsonFormat(pattern = DateUtils.DAY_MILLISECONDS,timezone = "GMT+8")
     private Date lastLoginTime;
 
+    /**
+     * loginTime means user currently loginTime
+     */
+    @JsonFormat(pattern=DateUtils.DAY_MILLISECONDS,timezone = "GMT+8")
     private Date loginTime;
 
+    /**
+     *  status of user
+     * @see com.constant.UserStatus
+     */
     private String userStatus;
 
     public static UserLoginAccessCheckResp createAccessCheckResultResp(Boolean accessCheckResult, UserLogin userLogin){
         UserLoginAccessCheckResp userLoginAccessCheckResp= UserLoginAccessCheckResp.builder()
-                .checkResult(accessCheckResult)
+                .accessResult(accessCheckResult)
                 .lastLoginTime(userLogin.getLastLoginTime())
                 .userStatus(userLogin.getStatus().getStatus())
-                .loginTime(userLogin.getLoginTime())
                 .build();
-        userLoginAccessCheckResp.setResultCode(AuthDesc.SUCCESS.getResCode());
-        userLoginAccessCheckResp.setResultDescription(AuthDesc.SUCCESS.getResDesc());
+        if(!accessCheckResult) {
+            userLoginAccessCheckResp.setLoginTime(userLogin.getLastLoginTime());
+            userLoginAccessCheckResp.setResultCode(AuthDesc.USER_STATUS_NOT_ACTIVE.getResCode());
+            userLoginAccessCheckResp.setResultDescription(AuthDesc.USER_STATUS_NOT_ACTIVE.getResDesc());
+        }else{
+            userLoginAccessCheckResp.setLoginTime(userLogin.getLoginTime());
+            userLoginAccessCheckResp.setResultCode(AuthDesc.SUCCESS.getResCode());
+            userLoginAccessCheckResp.setResultDescription(AuthDesc.SUCCESS.getResDesc());
+        }
         return userLoginAccessCheckResp;
     }
 }

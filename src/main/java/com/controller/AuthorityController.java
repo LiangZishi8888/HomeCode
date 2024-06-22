@@ -5,6 +5,7 @@ import com.Flow.UserRoleAccessCheckWorkFlow;
 import com.entity.crypto.DecryptRequest;
 import com.entity.req.AuthorityApplyRequest;
 import com.entity.req.UserLoginRequest;
+import com.entity.resp.AuthGrantResp;
 import com.entity.resp.BaseResp;
 import com.entity.resp.UserLoginAccessCheckResp;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class AuthorityController {
     }
 
     @PostMapping("/admin/addUser")
-    public BaseResp addUserResources(@RequestBody AuthorityApplyRequest authorityApplyRequet){
+    public AuthGrantResp addUserResources(@RequestBody AuthorityApplyRequest authorityApplyRequet){
         return adminGrantAccessWorkFlow.doProcess(authorityApplyRequet);
 
     }

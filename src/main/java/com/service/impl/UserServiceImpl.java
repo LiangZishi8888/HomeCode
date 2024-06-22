@@ -34,16 +34,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO checkUserRole(UserLogin userLogin, boolean adminOnly) {
         UserDTO userInDb = userDao.findUserById(userLogin.getUserId());
-        if (Objects.isNull(userInDb)) {
+        // if user exist inDb but still status DEREG we expose the same result
+        if (Objects.isNull(userInDb)||Objects.equals(userInDb.getStatus(),UserStatus.DEREG)) {
             log.error("user not exists,userId : {}", userLogin.getUserId());
             throw new AuthException(AuthDesc.USER_NOT_EXIST,userLogin.getUserId());
         }
 
         boolean isUserInDbAdmin = StringUtils.equals(userInDb.getRole(), UserRole.ADMIN.getRole());
-        boolean requiredAdmin=adminOnly||isLoginUserAdmin(userLogin);
 
         // user is not admin while try to access with admin role
-        if (!isUserInDbAdmin && requiredAdmin) {
+        if (!isUserInDbAdmin && adminOnly) {
             log.error("user has not grant admin authority,id: {}", userLogin.getUserId());
             throw new AuthException(AuthDesc.USER_NEED_ADMIN_PERMISSION,userInDb.getUserId());
         }
@@ -89,8 +89,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<AuthDTO> getUserAuths(String userId) {
-        authDao
-                return null
+        //authDao
+                return null;
     }
 
 }
