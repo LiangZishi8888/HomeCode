@@ -4,6 +4,8 @@ import com.constant.AuthDesc;
 import com.entity.UserLogin;
 import lombok.*;
 
+import java.sql.Date;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,9 +15,9 @@ public class UserLoginAccessCheckResp extends BaseResp {
 
     private Boolean checkResult;
 
-    private String lastLoginTime;
+    private Date lastLoginTime;
 
-    private String loginTime;
+    private Date loginTime;
 
     private String userStatus;
 

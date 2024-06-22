@@ -54,7 +54,7 @@ public class AdminGrantAccessWorkFlow {
     private void buildAuthGrantAccessCheckContext(AuthorityApplyRequest authorityApplyRequest,
                                                   AuthGrantAccessCheckContext authGrantAccessCheckContext) {
         authGrantAccessCheckContext.setAdminOnly(Boolean.TRUE);
-        authGrantAccessCheckContext.setAccessTime(DateUtils.getCurrentDateSecondsStr());
+        authGrantAccessCheckContext.setAccessTime(DateUtils.getCurrentDate());
         // map expectGrants to entity and set to context
         authGrantAccessCheckContext.setExpectedGrantAuths(
                 authorityApplyRequest.getExpectGrants()
@@ -149,7 +149,5 @@ public class AdminGrantAccessWorkFlow {
         // for build resp if success save
         authGrantAccessCheckContext.setPossibleGrantAuths(possibleGrantAuths);
         authService.savePossibleAuthsDataInDb(possibleGrantAuths,authGrantAccessCheckContext);
-
     }
-
 }

@@ -1,5 +1,6 @@
 package com.handler;
 
+import com.constant.AuthDesc;
 import com.constant.AuthException;
 
 import com.entity.resp.BaseResp;
@@ -18,11 +19,15 @@ public class GlobalExceptionHandler{
     @ExceptionHandler(AuthException.class)
     @ResponseBody
     public BaseResp resolveException(Exception e) {
-        AuthException contollerEx=(AuthException) e;
+        AuthException controllerEx;
+        if(!(e instanceof AuthException))
+            controllerEx = new AuthException(AuthDesc.SYS_INTERNAL_ERROR, e.getMessage());
+        else
+             controllerEx=(AuthException) e;
          BaseResp resp=new BaseResp();
-         resp.setResultCode(contollerEx.getResultCode());
-         resp.setResultDescription(contollerEx.getResultDescription());
-         resp.setErrorMsg(contollerEx.getErrorMsg());
+         resp.setResultCode(controllerEx.getResultCode());
+         resp.setResultDescription(controllerEx.getResultDescription());
+         resp.setErrorMsg(controllerEx.getErrorMsg());
          return resp;
     }
 }

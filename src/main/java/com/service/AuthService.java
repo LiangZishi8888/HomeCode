@@ -1,6 +1,5 @@
 package com.service;
 
-import com.context.AccessCheckContext;
 import com.context.AuthGrantAccessCheckContext;
 import com.entity.AuthCategoryEntity;
 
@@ -19,5 +18,6 @@ public interface AuthService {
      */
     List<AuthCategoryEntity> getPossibleGrantAuths(List<AuthCategoryEntity> authCategoryEntities);
 
-    boolean savePossibleAuthsDataInDb(List<AuthCategoryEntity> authCategoryEntities, AuthGrantAccessCheckContext accessCheckContext);
+    void savePossibleAuthsDataInDb(List<AuthCategoryEntity> authCategoryEntities,
+                                   AuthGrantAccessCheckContext accessCheckContext);
 }

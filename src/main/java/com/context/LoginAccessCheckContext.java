@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 public class LoginAccessCheckContext extends AccessCheckContext{
 
+    private Boolean checkResult;
+
     private UserLogin userLogin;
 
     private UserLoginRequest userLoginRequest;

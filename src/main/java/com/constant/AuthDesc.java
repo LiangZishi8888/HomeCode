@@ -20,7 +20,7 @@ public enum AuthDesc {
 
     USER_STATUS_NOT_ACTIVE("AUT0008", "User_Not_Active"),
 
-    AUTH_NOT_EXIST("AUT0009", "Auth_Not_Exists"),
+    AUTH_GRANT_FAILED("AUT0009","Auth_Grant_Failed"),
 
     SYS_INTERNAL_ERROR("SY0001", "Sys_Internal_Error"),
 

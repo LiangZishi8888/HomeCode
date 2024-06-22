@@ -7,6 +7,10 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * mapping class for requestBody with encryptRequest
+ */
 public class EncryptReq {
+
     private String reqData;
 }

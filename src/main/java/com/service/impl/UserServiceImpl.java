@@ -4,6 +4,7 @@ import com.constant.AuthDesc;
 import com.constant.AuthException;
 import com.constant.UserRole;
 import com.constant.UserStatus;
+import com.dao.AuthDao;
 import com.dao.UserDao;
 import com.entity.DTO.AuthDTO;
 import com.entity.DTO.UserDTO;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    AuthDao authDao;
+
     // here we design another paramter adminOnly for grant authority situation
     // in grant resource situation only adminOnly user can access this system
     // so that we can reuse this part of code
@@ -41,7 +45,7 @@ public class UserServiceImpl implements UserService {
         // user is not admin while try to access with admin role
         if (!isUserInDbAdmin && requiredAdmin) {
             log.error("user has not grant admin authority,id: {}", userLogin.getUserId());
-            throw new AuthException(AuthDesc.USER_NEED_ADMIN_PERMISSION,null);
+            throw new AuthException(AuthDesc.USER_NEED_ADMIN_PERMISSION,userInDb.getUserId());
         }
 
         // setName for only id access interface
@@ -85,7 +89,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<AuthDTO> getUserAuths(String userId) {
-        return null;
+        authDao
+                return null
     }
 
 }

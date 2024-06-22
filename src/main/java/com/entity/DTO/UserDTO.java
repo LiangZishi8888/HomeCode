@@ -5,43 +5,60 @@ import lombok.*;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.type.EnumTypeHandler;
 
+import java.sql.Date;
+
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * mapping entity of table `t_u_auth_users`
+ */
 public class UserDTO {
 
+    /**
+     * for drds
+     */
     Integer dpSplitKey;
 
+    /**
+     * the id of login user
+     */
     String userId;
 
+    /**
+     * name of user
+     */
     String accountName;
 
-    String createTime;
+    /**
+     * the time this user create
+     * this field is insert by register interface
+     */
+    Date createTime;
 
     /**
      * for modify user status
+     * usually the adminUser modify this
      */
-    String lastUpdateTime;
+    Date lastUpdateTime;
 
-    String lastLoginTime;
+    /**
+     * the time that system record user last access time
+     */
+    Date lastLoginTime;
 
+    /**
+     * role of user
+     * @see com.constant.UserRole
+     */
     String role;
 
+    /**
+     * status of user
+     * @see com.constant.AuthStatus
+     */
     UserStatus status;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "dpSplitKey=" + dpSplitKey +
-                ", userId='" + userId + '\'' +
-                ", accountName='" + accountName + '\'' +
-                ", createTime='" + createTime + '\'' +
-                ", lastUpdateTime='" + lastUpdateTime + '\'' +
-                ", lastLoginTime='" + lastLoginTime + '\'' +
-                ", role='" + role + '\'' +
-                ", status=" + status +
-                '}';
-    }
 }

@@ -5,6 +5,7 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.sql.Date;
 
 public abstract class DateUtils {
 
@@ -16,6 +17,11 @@ public abstract class DateUtils {
 
     private static DateTimeFormatter dfmSeconds = DateTimeFormatter.ofPattern(DAY);
 
+    public static Date getCurrentDate(){
+        long currentTs=System.currentTimeMillis();
+        return new java.sql.Date(currentTs);
+    }
+
 
     public static String getCurrentDateSecondsStr() {
         return getCurrentDateStrInternal(SECONDS);
@@ -26,8 +32,8 @@ public abstract class DateUtils {
     }
 
     private static String getCurrentDateStrInternal(String format) {
-        Assert.isTrue(StringUtils.equalsAny(format, DAY, SECONDS), "format is not support by system");
         LocalDateTime currentTime = LocalDateTime.now();
+        Assert.isTrue(StringUtils.equalsAny(format, DAY, SECONDS), "format is not support by system");
         switch (format) {
             case SECONDS:
                 return dfmSeconds.format(currentTime);

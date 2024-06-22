@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -57,8 +58,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void savePossibleAuthsDataInDb(List<AuthCategoryEntity> authCategoryEntities,
-                                             AuthGrantAccessCheckContext authGrantContext) {
-
+                                          AuthGrantAccessCheckContext authGrantContext) {
         List<AuthDTO> auths = authCategoryEntities.stream()
                 .map(entity -> initAuthDTO(entity, authGrantContext))
                 .collect(Collectors.toList());
@@ -68,18 +68,21 @@ public class AuthServiceImpl implements AuthService {
     private AuthDTO initAuthDTO(AuthCategoryEntity authCategoryEntity,
                                 AuthGrantAccessCheckContext authGrantContext) {
         GrantUserLogin grantUserLogin = authGrantContext.getUsersInfo();
-        return AuthDTO.builder()
+        AuthDTO auth = AuthDTO.builder()
                 .userId(grantUserLogin.getUserId())
                 .userName(grantUserLogin.getUserName())
                 .adminUserId(grantUserLogin.getAdminUserId())
                 .adminUserName(grantUserLogin.getAdminUserName())
                 .authAssociationId(AuthAssoNoGenerator.generateAssoNo())
-                .createTime(authGrantContext.getAccessTime())
                 .lastModifyTime(authGrantContext.getAccessTime())
                 .status(authCategoryEntity.getAuthStatus())
                 .authCategory(authCategoryEntity.getAuthName())
                 // makeSure  a users all auths in the same database
                 .dbSplitKey(DRDSDbSplitKeyUtils.calculateDbSplitKey(grantUserLogin.getUserId()))
                 .build();
+        // userHold will not set and db will not update this field
+        if(!authCategoryEntity.isUserHeld())
+            auth.setCreateTime(authGrantContext.getAccessTime());
+        return auth;
     }
 }

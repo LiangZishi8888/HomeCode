@@ -3,14 +3,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.AuthMapper">
 
-    <resultMap type="AuthDTO" id="userInDbMap">
+    <resultMap type="AuthDTO" id="AuthInDbMap">
         <id property="authAssociationId" column="user_id" javaType="String" jdbcType="VARCHAR"/>
         <result property="userId" column="user_id" javaType="String" jdbcType="VARCHAR"/>
         <result property="userName" column="user_name" javaType="String" jdbcType="VARCHAR"/>
         <result property="adminUserId" column="admin_user_id" javaType="String" jdbcType="VARCHAR"/>
         <result property="adminUserName" column="admin_user_name" javaType="String" jdbcType="VARCHAR"/>
-        <result property="createTime" column="create_time" javaType="String" jdbcType="VARCHAR"/>
-        <result property="lastModifyTime" column="last_modify_time" javaType="String" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" javaType="java.sql.Date" jdbcType="TIMESTAMP"/>
+        <result property="lastModifyTime" column="last_modify_time" javaType="java.sql.Date" jdbcType="TIMESTAMP"/>
         <result property="authCategory" column="auth_category" javaType="com.constant.AuthStatus" jdbcType="VARCHAR"
                 typeHandler="com.handler.UpperCaseFieldNameEnumHandler"/>
         <result property="status" column="status" javaType="com.constant.AuthStatus" jdbcType="VARCHAR"
@@ -19,7 +19,8 @@
 
     <sql id="Base_Column_List">
         auth_association_id,
-        user_id,user_name,
+        user_id,
+        user_name,
         admin_user_id,
         admin_user_name,
         create_time,
@@ -28,9 +29,35 @@
         status
     </sql>
 
-    <select id="queryUserAuthsByUserId"  resultMap="userInDbMap">
+    <sql id="insertColList">
+        dbSplitKey,
+        auth_association_id,
+        user_id,
+        user_name,
+        admin_user_id,
+        admin_user_name,
+        create_time,
+        auth_category,
+        status
+    </sql>
+
+    <select id="queryUserAuthsByUserId"  resultMap="AuthInDbMap">
+        select
+        <include refid="Base_Column_List" />
+        from `t_u_auths_grant_detials`where dbSplitKey=#{dbKey} and user_id=#{uid}
+    </select>
+
+    <select id="queryUserAuthByUserIdAndAuthName"  resultMap="AuthInDbMap">
         select
         <include refid="Base_Column_List" />
         from `t_u_auths_grant_detials`where dbSplitKey=#{dbKey} and user_id=#{uid} and auth_category=#{authName}
     </select>
+
+    <insert id="inserAuth" parameterType="authDTO">
+        insert
+    </insert>
+
+    <update id="updateUserAuth" parameterType="authDTO">
+        update `t_u_auths_grant_details` set admin_user_id=
+    </update>
 </mapper>

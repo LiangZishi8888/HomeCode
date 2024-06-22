@@ -9,14 +9,28 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * mapping class of userLoginRequest
+ */
 public class UserLoginRequest {
 
+    /**
+     * the userId of the user who try to access the system
+     */
     @NotNull
     String userId;
 
+    /**
+     * the accountName of user
+     */
     @NotNull
     String accountName;
 
+    /**
+     * role of user
+     * @see com.constant.UserRole
+     */
+    @NotNull
     String role;
 
 }
