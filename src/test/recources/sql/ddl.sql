@@ -13,7 +13,7 @@ CREATE TABLE  IF NOT EXISTS `t_u_auths_users`
 
 
 -- table record details of auth grant
-CREATE TABLE  IF NOT EXISTS `t_u_auths_grant_detials`
+CREATE TABLE  IF NOT EXISTS `t_u_auths_grant_details`
 (
   `dbSplitKey` INT(11) NOT NULL,
   `auth_association_id` VARCHAR(25) ,

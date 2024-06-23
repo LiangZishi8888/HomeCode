@@ -1,5 +1,6 @@
 package com.entity.DTO;
 
+import com.constant.AuthStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -66,5 +67,5 @@ public class AuthDTO {
      * auth status
      * @see com.constant.AuthStatus
      */
-    private String status;
+    private AuthStatus status;
 }

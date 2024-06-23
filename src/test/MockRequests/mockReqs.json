@@ -38,5 +38,10 @@
       "adminUserId":"123456",
       "userId":"123405",
       "expectGrants": ["authA","authB","authC"]
+   },
+   "grantApply4": {
+      "adminUserId":"123456",
+      "userId":"123406",
+      "expectGrants": ["authA","authB"]
    }
 }

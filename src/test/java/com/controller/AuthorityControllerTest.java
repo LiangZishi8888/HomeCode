@@ -1,10 +1,14 @@
 package com.controller;
 
 import com.cache.TestDataCache;
+import com.constant.AuthCategory;
 import com.constant.AuthDesc;
 import com.constant.UserRole;
 import com.constant.UserStatus;
+import com.dao.AuthDao;
 import com.dao.UserDao;
+import com.entity.AuthCategoryEntity;
+import com.entity.DTO.AuthDTO;
 import com.entity.DTO.UserDTO;
 import com.entity.crypto.DecryptBodyAdvice;
 import com.entity.req.AuthorityApplyRequest;
@@ -13,6 +17,7 @@ import com.entity.resp.AuthGrantResp;
 import com.entity.resp.UserLoginAccessCheckResp;
 import com.handler.GlobalExceptionHandler;
 import com.util.JsonUtil;
+import org.h2.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +28,9 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.utils.MockUtils.postPerform;
 
@@ -47,6 +55,9 @@ public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private AuthDao authDao;
 
     @Before
     public void init() {
@@ -195,6 +206,44 @@ public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
                 postPerform(mockMvc, req, AuthGrantResp.class, GRANT_AUTHS_URL, false);
         Assert.assertEquals(AuthDesc.USER_STATUS_NOT_ACTIVE.getResCode(), resp.getResultCode());
         Assert.assertEquals(AuthDesc.USER_STATUS_NOT_ACTIVE.getResDesc(), resp.getResultDescription());
+        System.out.println(JsonUtil.objToJson(resp));
+        System.out.println();
+    }
+
+    /**
+     * peter previous two auths authA is active and authB is forbidden grant by nelson
+     * authA no need update
+     * authB need update and grant time as the current,change to current admin,change status active
+     * associationNo no need update cause these two auths are exist by user
+     */
+    @Test
+    public void should_return_success_when_user_apply_grants_all_valid() {
+        AuthorityApplyRequest req = TestDataCache.getMockReq("grantApply4",
+                AuthorityApplyRequest.class);
+        //query all user exists results
+        List<AuthDTO> userAlreadyHolds = authDao.getUserAuthsById(req.getUserId());
+
+        //dispatch in this case each only have one
+        AuthDTO autha=userAlreadyHolds.stream().filter(dto-> StringUtils.equals(dto.getAuthCategory(), AuthCategory.AUTHA.getName())).
+                collect(Collectors.toList()).get(0);
+        AuthDTO authb=userAlreadyHolds.stream().filter(dto-> StringUtils.equals(dto.getAuthCategory(), AuthCategory.AUTHB.getName())).
+                collect(Collectors.toList()).get(0);
+
+        AuthGrantResp resp =
+                postPerform(mockMvc, req, AuthGrantResp.class, GRANT_AUTHS_URL, false);
+       Assert.assertEquals(AuthDesc.SUCCESS.getResDesc(),resp.getResultDescription());
+       Assert.assertEquals(AuthDesc.SUCCESS.getResCode(),resp.getResultCode());
+       Assert.assertEquals(req.getUserId(),resp.getUserId());
+       Assert.assertEquals(req.getAdminUserId(),resp.getAdminUserId());
+       Assert.assertEquals(resp.getSuccessCount(),Integer.valueOf(1));
+
+       // authB
+        AuthCategoryEntity successGrant = resp.getSuccessGrants().get(0);
+        Assert.assertEquals(successGrant.getAuthName(),authb.getAuthCategory());
+        Assert.assertEquals(successGrant.getAssociationNo(),authb.getAuthAssociationId());
+        Assert.assertNotEquals(successGrant.getAuthStatus(),authb.getStatus());
+        Assert.assertNotEquals(successGrant.getPreviousAdminUserName(),resp.getAdminUserName());
+        Assert.assertNotEquals(successGrant.getGrantTime(),successGrant.getPreviousGrantDate());
         System.out.println(JsonUtil.objToJson(resp));
         System.out.println();
     }

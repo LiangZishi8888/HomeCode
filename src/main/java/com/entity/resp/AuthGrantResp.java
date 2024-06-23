@@ -6,6 +6,7 @@ import com.context.AuthGrantAccessCheckContext;
 import com.entity.AuthCategoryEntity;
 import com.entity.GrantUserLogin;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.Date;
@@ -24,12 +25,12 @@ public class AuthGrantResp extends BaseResp{
     /**
      * the id of adminUser
      */
-    private String grantUserId;
+    private String adminUserId;
 
     /**
      * the name of adminUser
      */
-    private String grantUserName;
+    private String adminUserName;
 
     /**
      * the id of user who apply this auth
@@ -54,12 +55,12 @@ public class AuthGrantResp extends BaseResp{
     /**
      * to map user hold active grants in expect grants
      */
-    private List<AuthCategoryEntity> userHoldActive;
+    private List<AuthCategoryEntity> userPreviousHoldActive;
 
     /**
      * the time to grant authority
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss:SSS",timezone = "GMT+8")
     private Date grantTime;
 
 }

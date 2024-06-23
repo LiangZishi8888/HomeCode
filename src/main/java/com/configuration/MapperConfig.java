@@ -20,7 +20,8 @@ public class MapperConfig {
         SqlSessionFactoryBean factoryBean=new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSourceConfig.getDataSoure());
         ClassPathResource[] mapperLocations=new ClassPathResource[]{
-                new ClassPathResource("mappers/userMapper.xml")
+                new ClassPathResource("mappers/userMapper.xml"),
+                new ClassPathResource("mappers/authMapper.xml")
         };
         factoryBean.setMapperLocations(mapperLocations);
         factoryBean.setConfigLocation(new ClassPathResource("mybatis-config.xml"));

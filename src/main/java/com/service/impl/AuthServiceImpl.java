@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public List<AuthCategoryEntity> getPossibleGrantAuths(List<AuthCategoryEntity> authCategoryEntities) {
         return authCategoryEntities.stream()
-                        .filter(auth->AuthCategoryEntity.isUserHoldActiveAuth(auth))
+                        .filter(auth->!AuthCategoryEntity.isUserHoldActiveAuth(auth))
                                 .collect(Collectors.toList());
     }
 
@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
     public List<AuthCategoryEntity> getUserHoldActiveAuths(List<AuthCategoryEntity> authCategoryEntities) {
         return authCategoryEntities.stream()
                 // user not hold or user hold while status !=active will be filtered
-                .filter(auth->!AuthCategoryEntity.isUserHoldActiveAuth(auth))
+                .filter(auth->AuthCategoryEntity.isUserHoldActiveAuth(auth))
                 .collect(Collectors.toList());
     }
 
@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
                 .map(entity ->{
                     // just modifiy possible auths in expectGrants
                     // user hold will not effect
-                    entity.setAuthStatus(AuthStatus.ACTIVE.getStatus());
+                    entity.setAuthStatus(AuthStatus.ACTIVE);
                     entity.setGrantTime(authGrantContext.getAccessTime());
                     AuthDTO authDTO=initAuthDTO(entity, authGrantContext);
                     return authDTO;
@@ -84,16 +84,17 @@ public class AuthServiceImpl implements AuthService {
                 .userName(grantUserLogin.getUserName())
                 .adminUserId(grantUserLogin.getAdminUserId())
                 .adminUserName(grantUserLogin.getAdminUserName())
-                .status(AuthStatus.ACTIVE.getStatus())
+                .status(AuthStatus.ACTIVE)
                 .authCategory(authCategoryEntity.getAuthName())
                 // makeSure  a users all auths in the same database
                 .dbSplitKey(DRDSDbSplitKeyUtils.calculateDbSplitKey(grantUserLogin.getUserId()))
                 .build();
 
         // userHold will not set and make a mark to determin whether insert or update
-        if(!authCategoryEntity.isUserHeld()) {
+        if(!authCategoryEntity.getIsUserHeld()) {
             auth.setAuthAssociationId(AuthAssoNoGenerator.generateAssoNo());
             auth.setCreateTime(authGrantContext.getAccessTime());
+            authCategoryEntity.setAssociationNo(auth.getAuthAssociationId());
         }else{
             auth.setLastModifyTime(authGrantContext.getAccessTime());
         }

@@ -69,6 +69,7 @@ public class AdminGrantAccessWorkFlow {
                         .collect(Collectors.toList()));
         authGrantAccessCheckContext.setUsersInfo(
                 GrantUserLogin.createGrantUserLogin(authorityApplyRequest));
+        authGrantAccessCheckContext.setAuthorityApplyRequest(authorityApplyRequest);
 
     }
 
@@ -126,9 +127,14 @@ public class AdminGrantAccessWorkFlow {
         for (AuthCategoryEntity expectAuth : authCategoryEntities) {
             for (AuthDTO auth : userAuths) {
                 if (StringUtils.equals(auth.getAuthCategory(), expectAuth.getAuthName())) {
-                    expectAuth.setUserHeld(Boolean.TRUE);
+                    expectAuth.setIsUserHeld(Boolean.TRUE);
                     expectAuth.setAuthStatus(auth.getStatus());
                     expectAuth.setGrantTime(auth.getCreateTime());
+                    expectAuth.setAssociationNo(auth.getAuthAssociationId());
+                    expectAuth.setPreviousGrantDate(auth.getCreateTime());
+                    expectAuth.setPreviousAdminUserId(auth.getAdminUserId());
+                    expectAuth.setPreviousAdminUserName(auth.getAdminUserName());
+                    expectAuth.setPreviousAuthStatus(auth.getStatus());
                 }
             }
         }
@@ -156,10 +162,10 @@ public class AdminGrantAccessWorkFlow {
                 .grantTime(accessCheckContext.getAccessTime())
                 .userId(grantUserLogin.getUserId())
                 .userName(grantUserLogin.getUserName())
-                .grantUserId(grantUserLogin.getAdminUserId())
-                .grantUserName(grantUserLogin.getAdminUserName())
+                .adminUserId(grantUserLogin.getAdminUserId())
+                .adminUserName(grantUserLogin.getAdminUserName())
                 .successGrants(accessCheckContext.getPossibleGrantAuths())
-                .userHoldActive(accessCheckContext.getUserHoldActiveAuths())
+                .userPreviousHoldActive(accessCheckContext.getUserHoldActiveAuths())
                 .successCount(accessCheckContext.getPossibleGrantAuths().size())
                 .build();
         if(authGrantResp.getSuccessCount()!=0)
