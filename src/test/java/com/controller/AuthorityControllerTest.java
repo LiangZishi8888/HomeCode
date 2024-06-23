@@ -237,13 +237,29 @@ public class AuthorityControllerTest extends AbstractJUnit4SpringContextTests {
        Assert.assertEquals(req.getAdminUserId(),resp.getAdminUserId());
        Assert.assertEquals(resp.getSuccessCount(),Integer.valueOf(1));
 
-       // authB
+       // authB  authb is query before sending request
         AuthCategoryEntity successGrant = resp.getSuccessGrants().get(0);
         Assert.assertEquals(successGrant.getAuthName(),authb.getAuthCategory());
         Assert.assertEquals(successGrant.getAssociationNo(),authb.getAuthAssociationId());
+
+        // adminUserName grantTime status should updated
         Assert.assertNotEquals(successGrant.getAuthStatus(),authb.getStatus());
         Assert.assertNotEquals(successGrant.getPreviousAdminUserName(),resp.getAdminUserName());
         Assert.assertNotEquals(successGrant.getGrantTime(),successGrant.getPreviousGrantDate());
+
+        Assert.assertEquals(successGrant.getPreviousAdminUserId(),authb.getAdminUserId());
+        Assert.assertEquals(successGrant.getPreviousGrantDate(),authb.getCreateTime());
+        Assert.assertNotEquals(successGrant.getGrantTime(),authb.getCreateTime());
+
+        // authA autha is query before sending request previous active no modification
+        AuthCategoryEntity previousHoldActive = resp.getUserPreviousHoldActive().get(0);
+        Assert.assertEquals(previousHoldActive.getAuthName(),autha.getAuthCategory());
+        Assert.assertEquals(previousHoldActive.getAssociationNo(),autha.getAuthAssociationId());
+        Assert.assertEquals(previousHoldActive.getAuthStatus(),autha.getStatus());
+        Assert.assertEquals(previousHoldActive.getPreviousAdminUserName(),autha.getAdminUserName());
+        Assert.assertEquals(previousHoldActive.getGrantTime(),successGrant.getPreviousGrantDate());
+        Assert.assertEquals(previousHoldActive.getPreviousAdminUserId(),autha.getAdminUserId());
+        Assert.assertEquals(previousHoldActive.getPreviousGrantDate(),autha.getCreateTime());
         System.out.println(JsonUtil.objToJson(resp));
         System.out.println();
     }
