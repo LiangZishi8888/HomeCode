@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mapper.AuthMapper">
+<mapper namespace="com.demo.mapper.AuthMapper">
 
     <resultMap type="AuthDTO" id="AuthInDbMap">
         <id property="authAssociationId" column="auth_association_id" javaType="String" jdbcType="VARCHAR"/>
@@ -12,8 +12,8 @@
         <result property="createTime" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
         <result property="lastModifyTime" column="last_modify_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
         <result property="authCategory" column="auth_category" javaType="String" jdbcType="VARCHAR"/>
-        <result property="status" column="status" javaType="com.constant.AuthStatus" jdbcType="VARCHAR"
-                typeHandler="com.handler.UpperCaseFieldNameEnumHandler"/>
+        <result property="status" column="status" javaType="com.demo.constant.AuthStatus" jdbcType="VARCHAR"
+                typeHandler="com.demo.handler.UpperCaseFieldNameEnumHandler"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -52,8 +52,9 @@
         from `t_u_auths_grant_details`where dbSplitKey=#{dbKey} and user_id=#{uid} and auth_category=#{authName}
     </select>
 
-    <insert id="inserAuth" parameterType="AuthDTO">
-        insert
+    <insert id="insertUserAuth" parameterType="AuthDTO">
+        insert into `t_u_auths_grant_details` VALUES(#{dbSplitKey},#{authAssociationId},
+           #{userId},#{userName},#{adminUserId},#{adminUserName},#{createTime},null,#{authCategory},#{status})
     </insert>
 
     <update id="updateUserAuth" parameterType="AuthDTO">

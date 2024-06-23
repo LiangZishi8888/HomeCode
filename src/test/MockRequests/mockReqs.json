@@ -43,5 +43,22 @@
       "adminUserId":"123456",
       "userId":"123406",
       "expectGrants": ["authA","authB"]
+   },
+
+   "grantApply5": {
+      "adminUserId":"123456",
+      "userId":"123407",
+      "expectGrants": ["authA","authB","authC"]
+   },
+
+   "unionApply1": {
+      "userId":"123406",
+      "accountName":"Peter",
+      "role":"user"
+   },
+   "unionApply2": {
+      "adminUserId":"123456",
+      "userId":"123406",
+      "expectGrants": ["authA","authB","authC"]
    }
 }

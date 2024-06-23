@@ -1,10 +1,8 @@
 package com.cache;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.entity.req.UserLoginRequest;
-import org.junit.Test;
 import org.springframework.util.Assert;
-import com.util.JsonUtil;
+import com.demo.util.JsonUtil;
 
 import java.io.File;
 

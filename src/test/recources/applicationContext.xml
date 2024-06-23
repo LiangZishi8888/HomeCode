@@ -14,13 +14,11 @@
        http://www.springframework.org/schema/context/spring-context.xsd">
 
 
-    <context:component-scan base-package="com"/>
-
-    <context:property-placeholder location="classpath:log4j2.properties"/>
-
+    <context:component-scan base-package="com.demo"/>
+<!--    <context:property-placeholder location="classpath:log4j.properties"/>-->
     <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
-        <jdbc:script location="classpath:sql/ddl.sql"/>
-        <jdbc:script location="classpath:sql/dml.sql"/>
+        <jdbc:script location="classpath:sqls/ddl.sql"/>
+        <jdbc:script location="classpath:sqls/dml.sql"/>
     </jdbc:initialize-database>
 
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>

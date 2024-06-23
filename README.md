@@ -8,10 +8,10 @@
 + Mappers : classpath:/mappers/.*
 + MockRequests : /src/test/mockRequest/mockReqs.json
 + EncryptRequestExample : /src/test/MockRequests/encryptMockReqs.json
-+ DataSoucreInitScript :classpath:sql/.*
-+ UnitTestLocation :  com.controller.AuthorityControllerTest(ALL)
++ DataSoucreInitScript :/sql/ddl.sql,/sql/dml.sql
++ UnitTestLocation :  com.demo.controller.AuthorityControllerTest(ALL)
 + EncryptAlorithum : SM4 symmetric
-+ SysKeyLocation : Inside class com.entity.crypto.CipherUtils
++ SysKeyLocation : Inside class com.demo.entity.crypto.CipherUtils
 + DecryptAnnotaion : DecryptRequest(Annotation)
 ## DbDesign ##
 ***

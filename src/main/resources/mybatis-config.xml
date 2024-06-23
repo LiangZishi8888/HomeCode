@@ -5,7 +5,7 @@
 <configuration>
 
     <typeAliases>
-        <package name="com.entity.DTO"/>
+        <package name="com.demo.entity.DTO"/>
     </typeAliases>
 
 

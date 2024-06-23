@@ -1,8 +1,8 @@
 package com.utils;
 
-import com.entity.crypto.CipherUtils;
-import com.entity.req.EncryptReq;
-import com.util.JsonUtil;
+import com.demo.entity.crypto.CipherUtils;
+import com.demo.entity.req.EncryptReq;
+import com.demo.util.JsonUtil;
 import org.junit.Assert;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +25,8 @@ public abstract class MockUtils {
         }
         return null;
     }
+
+
     public static<T> MockHttpServletRequestBuilder buildHttpPostReq(String url, Object req,boolean isEncrypt){
         String reqBody=JsonUtil.objToJson(req);
         System.out.println(reqBody);
@@ -40,8 +42,11 @@ public abstract class MockUtils {
                 .contentType(MediaType.APPLICATION_JSON);
     }
 
+
+
     // you can mock signature self
     public static String getEncryptContent(String s){
         return CipherUtils.encryptWithSysKey(s);
     }
+
 }
