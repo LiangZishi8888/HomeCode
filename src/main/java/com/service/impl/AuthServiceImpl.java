@@ -48,19 +48,30 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public List<AuthCategoryEntity> getPossibleGrantAuths(List<AuthCategoryEntity> authCategoryEntities) {
         return authCategoryEntities.stream()
-                .filter(authCategoryEntity ->
-                        !authCategoryEntity.isUserHeld()
-                                ||
-                                //status in entity will set if authInDb match entity see previous precedure
-                                StringUtils.equals(authCategoryEntity.getAuthStatus(), AuthStatus.DEREG.getStatus()))
+                        .filter(auth->AuthCategoryEntity.isUserHoldActiveAuth(auth))
+                                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AuthCategoryEntity> getUserHoldActiveAuths(List<AuthCategoryEntity> authCategoryEntities) {
+        return authCategoryEntities.stream()
+                // user not hold or user hold while status !=active will be filtered
+                .filter(auth->!AuthCategoryEntity.isUserHoldActiveAuth(auth))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void savePossibleAuthsDataInDb(List<AuthCategoryEntity> authCategoryEntities,
+    public void savePossibleAuthsDataInDb(List<AuthCategoryEntity> possibleAuths,
                                           AuthGrantAccessCheckContext authGrantContext) {
-        List<AuthDTO> auths = authCategoryEntities.stream()
-                .map(entity -> initAuthDTO(entity, authGrantContext))
+        List<AuthDTO> auths = possibleAuths.stream()
+                .map(entity ->{
+                    // just modifiy possible auths in expectGrants
+                    // user hold will not effect
+                    entity.setAuthStatus(AuthStatus.ACTIVE.getStatus());
+                    entity.setGrantTime(authGrantContext.getAccessTime());
+                    AuthDTO authDTO=initAuthDTO(entity, authGrantContext);
+                    return authDTO;
+                })
                 .collect(Collectors.toList());
         authorityDBService.saveAuthsInDb(auths);
     }
@@ -73,16 +84,19 @@ public class AuthServiceImpl implements AuthService {
                 .userName(grantUserLogin.getUserName())
                 .adminUserId(grantUserLogin.getAdminUserId())
                 .adminUserName(grantUserLogin.getAdminUserName())
-                .authAssociationId(AuthAssoNoGenerator.generateAssoNo())
-                .lastModifyTime(authGrantContext.getAccessTime())
-                .status(authCategoryEntity.getAuthStatus())
+                .status(AuthStatus.ACTIVE.getStatus())
                 .authCategory(authCategoryEntity.getAuthName())
                 // makeSure  a users all auths in the same database
                 .dbSplitKey(DRDSDbSplitKeyUtils.calculateDbSplitKey(grantUserLogin.getUserId()))
                 .build();
-        // userHold will not set and db will not update this field
-        if(!authCategoryEntity.isUserHeld())
+
+        // userHold will not set and make a mark to determin whether insert or update
+        if(!authCategoryEntity.isUserHeld()) {
+            auth.setAuthAssociationId(AuthAssoNoGenerator.generateAssoNo());
             auth.setCreateTime(authGrantContext.getAccessTime());
+        }else{
+            auth.setLastModifyTime(authGrantContext.getAccessTime());
+        }
         return auth;
     }
 }

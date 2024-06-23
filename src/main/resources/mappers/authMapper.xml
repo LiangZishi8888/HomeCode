@@ -53,11 +53,13 @@
         from `t_u_auths_grant_detials`where dbSplitKey=#{dbKey} and user_id=#{uid} and auth_category=#{authName}
     </select>
 
-    <insert id="inserAuth" parameterType="authDTO">
+    <insert id="inserAuth" parameterType="AuthDTO">
         insert
     </insert>
 
-    <update id="updateUserAuth" parameterType="authDTO">
-        update `t_u_auths_grant_details` set admin_user_id=
+    <update id="updateUserAuth" parameterType="AuthDTO">
+        update `t_u_auths_grant_details`
+        set admin_user_id=#{adminUserId},admin_user_name=#{adminUserName},
+              create_time=#{createTime},status=#{status}
     </update>
 </mapper>

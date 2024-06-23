@@ -23,5 +23,20 @@
       "userId":"123405",
       "accountName":"Frank",
       "role":"user"
+   },
+   "grantApply1": {
+      "adminUserId":"123401",
+      "userId":"123405",
+      "expectGrants": ["authA","authB","authC"]
+   },
+   "grantApply2": {
+      "adminUserId":"123456",
+      "userId":"123401",
+      "expectGrants": ["authA","authB","authD"]
+   },
+   "grantApply3": {
+      "adminUserId":"123456",
+      "userId":"123405",
+      "expectGrants": ["authA","authB","authC"]
    }
 }

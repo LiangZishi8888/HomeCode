@@ -27,7 +27,7 @@ public class AuthGrantAccessCheckContext extends AccessCheckContext{
     /**
      * to store an reference to the orginal requestBody
      */
-    AuthorityApplyRequest authorityApplyRequest;
+    private AuthorityApplyRequest authorityApplyRequest;
 
     /**
      * possible grant auths --this means if no database exception throw
@@ -39,5 +39,10 @@ public class AuthGrantAccessCheckContext extends AccessCheckContext{
      * the mappings of the user expect grants in orginal requestBody
      */
     private List<AuthCategoryEntity> expectedGrantAuths;
+
+    /**
+     * the mapping of the user already hold and active auths in expect grants
+     */
+    private List<AuthCategoryEntity> userHoldActiveAuths;
 
 }

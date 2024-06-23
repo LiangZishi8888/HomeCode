@@ -12,12 +12,12 @@ public interface UserService {
 
     UserDTO checkUserRole(UserLogin userLogin, boolean adminOnly);
 
-    boolean isLoginUserAdmin(UserLogin user);
+    boolean isUserAdmin(UserDTO user);
 
     void updateUserLoginTime(UserLogin userLogin);
 
     Boolean checkUserStatus(UserStatus userStatus);
 
-    List<AuthDTO> getUserAuths(String userId);
+    List<AuthDTO> getUserAuthsByUserId(String userId);
 
 }

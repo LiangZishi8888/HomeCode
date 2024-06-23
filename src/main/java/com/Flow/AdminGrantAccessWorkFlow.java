@@ -51,7 +51,9 @@ public class AdminGrantAccessWorkFlow {
                 authGrantAccessCheckContext.getUsersInfo());
 
         dispatchAuthsAndUpdate(authGrantAccessCheckContext);
-        return null;
+
+        return  createGrantAuthSucessResp(authGrantAccessCheckContext.getUsersInfo(),
+                authGrantAccessCheckContext);
     }
 
     private void buildAuthGrantAccessCheckContext(AuthorityApplyRequest authorityApplyRequest,
@@ -107,7 +109,8 @@ public class AdminGrantAccessWorkFlow {
         Objects.requireNonNull(expectAuths);
 
         // get tobeGrantedUser currently hold auths
-        List<AuthDTO> userAuths = userService.getUserAuths(grantUserLogin.getUserId());
+        // cause we pass userId validation check here userId is valid
+        List<AuthDTO> userAuths = userService.getUserAuthsByUserId(grantUserLogin.getUserId());
 
         updateExceptAuthsWithDbResult(userAuths, expectAuths);
 
@@ -125,9 +128,7 @@ public class AdminGrantAccessWorkFlow {
                 if (StringUtils.equals(auth.getAuthCategory(), expectAuth.getAuthName())) {
                     expectAuth.setUserHeld(Boolean.TRUE);
                     expectAuth.setAuthStatus(auth.getStatus());
-
-                    // only authInDb match the current Entity will set this property
-                    expectAuth.setAuthInDb(auth);
+                    expectAuth.setGrantTime(auth.getCreateTime());
                 }
             }
         }
@@ -139,11 +140,32 @@ public class AdminGrantAccessWorkFlow {
         // this has been set in previous step
         List<AuthCategoryEntity> expectGrantAuths = authGrantAccessCheckContext.getExpectedGrantAuths();
         List<AuthCategoryEntity> possibleGrantAuths = authService.getPossibleGrantAuths(expectGrantAuths);
+        List<AuthCategoryEntity> userHoldActiveAtuhs = authService.getUserHoldActiveAuths(expectGrantAuths);
 
-        if(CollectionUtils.isEmpty(possibleGrantAuths))
+        if (CollectionUtils.isEmpty(possibleGrantAuths))
             return;
         // for build resp if success save
         authGrantAccessCheckContext.setPossibleGrantAuths(possibleGrantAuths);
-        authService.savePossibleAuthsDataInDb(possibleGrantAuths,authGrantAccessCheckContext);
+        authGrantAccessCheckContext.setUserHoldActiveAuths(userHoldActiveAtuhs);
+        authService.savePossibleAuthsDataInDb(possibleGrantAuths, authGrantAccessCheckContext);
+    }
+
+    private  AuthGrantResp createGrantAuthSucessResp(GrantUserLogin grantUserLogin,
+                                                          AuthGrantAccessCheckContext accessCheckContext){
+        AuthGrantResp authGrantResp= AuthGrantResp.builder()
+                .grantTime(accessCheckContext.getAccessTime())
+                .userId(grantUserLogin.getUserId())
+                .userName(grantUserLogin.getUserName())
+                .grantUserId(grantUserLogin.getAdminUserId())
+                .grantUserName(grantUserLogin.getAdminUserName())
+                .successGrants(accessCheckContext.getPossibleGrantAuths())
+                .userHoldActive(accessCheckContext.getUserHoldActiveAuths())
+                .successCount(accessCheckContext.getPossibleGrantAuths().size())
+                .build();
+        if(authGrantResp.getSuccessCount()!=0)
+            authGrantResp.setGrantTime(accessCheckContext.getAccessTime());
+        authGrantResp.setResultCode(AuthDesc.SUCCESS.getResCode());
+        authGrantResp.setResultDescription(AuthDesc.SUCCESS.getResDesc());
+        return authGrantResp;
     }
 }

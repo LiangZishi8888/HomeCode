@@ -29,7 +29,7 @@ public class UserDaoImpl implements UserDao {
             return user;
         }catch (Exception e){
             log.error("query table t_u_auths_users failed",e);
-            throw new AuthException(AuthDesc.DB_INTERNAL_ERROR,null);
+            throw new AuthException(AuthDesc.DB_INTERNAL_ERROR,userId);
         }
     }
 

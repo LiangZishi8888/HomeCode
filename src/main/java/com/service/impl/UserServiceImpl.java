@@ -11,7 +11,7 @@ import com.entity.DTO.UserDTO;
 import com.entity.UserLogin;
 import com.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.h2.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,11 +39,18 @@ public class UserServiceImpl implements UserService {
             log.error("user not exists,userId : {}", userLogin.getUserId());
             throw new AuthException(AuthDesc.USER_NOT_EXIST,userLogin.getUserId());
         }
+        String userName=userLogin.getAccountName();
 
-        boolean isUserInDbAdmin = StringUtils.equals(userInDb.getRole(), UserRole.ADMIN.getRole());
+        // if we have login name check whether the name consists with dbRecord
+        if(StringUtils.isNotEmpty(userName)&&!StringUtils.equals(userName,userInDb.getAccountName())){
+            log.error("user login name is not compatible with db login:{},actual:{}",
+                    userLogin.getAccountName(),userInDb.getAccountName());
+            throw new AuthException(AuthDesc.USER_NOT_EXIST,userLogin.getUserId());
+        }
 
+        boolean isUserInDbAdmin = isUserAdmin(userInDb);
         // user is not admin while try to access with admin role
-        if (!isUserInDbAdmin && adminOnly) {
+        if ( adminOnly&&!isUserInDbAdmin) {
             log.error("user has not grant admin authority,id: {}", userLogin.getUserId());
             throw new AuthException(AuthDesc.USER_NEED_ADMIN_PERMISSION,userInDb.getUserId());
         }
@@ -56,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isLoginUserAdmin(UserLogin userLogin) {
+    public boolean isUserAdmin(UserDTO userLogin) {
         Objects.requireNonNull(userLogin);
         return StringUtils.equals(userLogin.getRole(), UserRole.ADMIN.getRole());
     }
@@ -88,9 +95,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuthDTO> getUserAuths(String userId) {
-        //authDao
-                return null;
+    public List<AuthDTO> getUserAuthsByUserId(String userId) {
+        return authDao.getUserAuthsById(userId);
     }
 
 }

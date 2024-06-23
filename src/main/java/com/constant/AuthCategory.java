@@ -7,11 +7,11 @@ public enum AuthCategory {
 
     ALL("all"),
 
-    AUTHA("autha"),
+    AUTHA("authA"),
 
-    AUTHB("authb"),
+    AUTHB("authB"),
 
-    AUTHC("authc");
+    AUTHC("authC");
 
     private String name;
 

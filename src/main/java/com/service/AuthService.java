@@ -18,6 +18,8 @@ public interface AuthService {
      */
     List<AuthCategoryEntity> getPossibleGrantAuths(List<AuthCategoryEntity> authCategoryEntities);
 
+    List<AuthCategoryEntity> getUserHoldActiveAuths(List<AuthCategoryEntity> authCategoryEntities);
+
     void savePossibleAuthsDataInDb(List<AuthCategoryEntity> authCategoryEntities,
                                    AuthGrantAccessCheckContext accessCheckContext);
 }

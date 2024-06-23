@@ -13,4 +13,6 @@ public interface AuthMapper {
     AuthDTO queryUserAuthByUserIdAndAuthName(@Param("dbSplitKey") int dbSplitKey,
                                              @Param("uid") String userId,
                                              @Param("authName") String categoryName);
+
+    int  updateUserAuth(AuthDTO authDTO);
 }

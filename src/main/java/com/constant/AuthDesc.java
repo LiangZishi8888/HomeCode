@@ -22,7 +22,7 @@ public enum AuthDesc {
 
     SYS_INTERNAL_ERROR("SY0001", "Sys_Internal_Error"),
 
-    REQ_DECRPT_FAILED("SY0002", "Encrypt_Req_Failed");
+    REQ_DECRPT_FAILED("SY0002", "Decrypt_Req_Failed");
 
 
     public String resCode;
