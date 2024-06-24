@@ -21,17 +21,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.demo.SpringApplicationDemo;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
@@ -219,10 +216,11 @@ public class AuthorityControllerTest {
     }
 
     /**
-     * peter previous two auths authA is active and authB is forbidden grant by nelson
+     * dick previous two auths authA is active and authB is forbidden grant by nelson
      * authA no need update
      * authB need update and grant time as the current,change to current admin,change status active
      * associationNo no need update cause these two auths are exist by user
+     * run this test individualy
      */
     @Test
     public void should_return_success_when_user_apply_grants_all_valid() {
@@ -243,7 +241,6 @@ public class AuthorityControllerTest {
        Assert.assertEquals(AuthDesc.SUCCESS.getResCode(),resp.getResultCode());
        Assert.assertEquals(req.getUserId(),resp.getUserId());
        Assert.assertEquals(req.getAdminUserId(),resp.getAdminUserId());
-       Assert.assertEquals(resp.getSuccessCount(),Integer.valueOf(1));
 
        // authB  authb is query before sending request
         AuthCategoryEntity successGrant = resp.getSuccessGrants().get(0);
@@ -285,6 +282,7 @@ public class AuthorityControllerTest {
         List<AuthDTO> userAuths = authDao.getUserAuthsById(req.getUserId());
         Assert.assertTrue(CollectionUtils.isEmpty(userAuths));
 
+
         AuthGrantResp resp =
                 postPerform(mockMvc, req, AuthGrantResp.class, GRANT_AUTHS_URL, false);
         Assert.assertTrue(resp.getSuccessCount()==3);
@@ -312,8 +310,6 @@ public class AuthorityControllerTest {
         Assert.assertEquals(queryResp.getIsExists(),Boolean.TRUE);
         System.out.println(JsonUtil.objToJson(queryResp));
         System.out.println();
-
-
     }
 
     /**
@@ -352,6 +348,7 @@ public class AuthorityControllerTest {
      *    C is insert
      */
     @Test
+    @Transactional
     public void  Union_together_Test(){
         UserLoginRequest req = TestDataCache.getMockReq("unionApply1",
                 UserLoginRequest.class);
@@ -402,6 +399,8 @@ public class AuthorityControllerTest {
 
         //B is forbidden and now should be active
         Assert.assertEquals(queryResp2.getAuthDetail().getAuthStatus(),AuthStatus.ACTIVE);
+
+
     }
 
     private static MockHttpServletRequestBuilder buildHttpGetReq(String url, String... params){

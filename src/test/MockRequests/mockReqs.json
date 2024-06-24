@@ -41,7 +41,7 @@
    },
    "grantApply4": {
       "adminUserId":"123456",
-      "userId":"123406",
+      "userId":"123408",
       "expectGrants": ["authA","authB"]
    },
 

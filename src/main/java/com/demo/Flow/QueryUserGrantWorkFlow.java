@@ -1,6 +1,7 @@
 package com.demo.Flow;
 
 import com.demo.constant.AuthDesc;
+import com.demo.constant.AuthStatus;
 import com.demo.context.QueryContext;
 import com.demo.entity.AuthCategoryEntity;
 import com.demo.entity.DTO.AuthDTO;
@@ -50,7 +51,9 @@ public class QueryUserGrantWorkFlow {
         // according to the pdf this interface has passed previous check
         // do need check user Anymore
         AuthDTO authDTO = authService.queryUserAuthsByIdName(queryContext);
-        if(Objects.isNull(authDTO))
+
+        // dereg-not exists   frobidden-show to user
+        if(Objects.isNull(authDTO)||Objects.equals(authDTO.getStatus(), AuthStatus.DEREG))
             return QueryResp.createNotExistsAuthResp();
         AuthCategoryEntity authEntity = AuthCategoryEntity.initAuthCategoryEntity(queryContext.getAuthName());
         AuthCategoryEntity.mapAuthDtoBackToEntity(authEntity,authDTO);

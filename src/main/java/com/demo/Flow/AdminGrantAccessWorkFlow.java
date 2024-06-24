@@ -152,6 +152,8 @@ public class AdminGrantAccessWorkFlow {
 
     private  AuthGrantResp createGrantAuthSucessResp(GrantUserLogin grantUserLogin,
                                                           AuthGrantAccessCheckContext accessCheckContext){
+        int size=CollectionUtils.isEmpty(accessCheckContext.getPossibleGrantAuths())?0:
+                                  accessCheckContext.getPossibleGrantAuths().size();
         AuthGrantResp authGrantResp= AuthGrantResp.builder()
                 .grantTime(accessCheckContext.getAccessTime())
                 .userId(grantUserLogin.getUserId())
@@ -160,7 +162,7 @@ public class AdminGrantAccessWorkFlow {
                 .adminUserName(grantUserLogin.getAdminUserName())
                 .successGrants(accessCheckContext.getPossibleGrantAuths())
                 .userPreviousHoldActive(accessCheckContext.getUserHoldActiveAuths())
-                .successCount(accessCheckContext.getPossibleGrantAuths().size())
+                .successCount(size)
                 .build();
         if(authGrantResp.getSuccessCount()!=0)
             authGrantResp.setGrantTime(accessCheckContext.getAccessTime());
